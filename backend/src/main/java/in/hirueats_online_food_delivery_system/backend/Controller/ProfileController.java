@@ -2,6 +2,7 @@ package in.hirueats_online_food_delivery_system.backend.Controller;
 
 import in.hirueats_online_food_delivery_system.backend.IO.ProfileRequest;
 import in.hirueats_online_food_delivery_system.backend.IO.ProfileResponse;
+import in.hirueats_online_food_delivery_system.backend.Service.EmailService;
 import in.hirueats_online_food_delivery_system.backend.Service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileController {
 
      private final ProfileService profileService;
+     private final EmailService emailService;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
       public ProfileResponse register(@Valid @RequestBody ProfileRequest request) {
         ProfileResponse response = profileService.createProfile(request);
-        //TODO:Welcome Email
-
+        emailService.sendWelcomeEmail(response.getEmail(),response.getName());
         return response;
 
     }
