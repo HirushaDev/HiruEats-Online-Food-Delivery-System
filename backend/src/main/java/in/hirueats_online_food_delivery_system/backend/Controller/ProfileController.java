@@ -24,5 +24,10 @@ public class ProfileController {
 
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "Auth is Working";
+    }
+
 
 }
