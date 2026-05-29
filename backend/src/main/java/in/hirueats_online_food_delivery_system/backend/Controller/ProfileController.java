@@ -6,6 +6,7 @@ import in.hirueats_online_food_delivery_system.backend.Service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,10 +25,17 @@ public class ProfileController {
 
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "Auth is Working";
+//    @GetMapping("/test")
+//    public String test() {
+//        return "Auth is Working";
+//    }
+
+    @GetMapping("/profile")
+    public ProfileResponse getProfile(@CurrentSecurityContext(expression = "authentication?.name")String email){
+        return profileService.getProfile(email);
     }
+
+
 
 
 }

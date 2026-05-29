@@ -6,6 +6,7 @@ import in.hirueats_online_food_delivery_system.backend.IO.ProfileResponse;
 import in.hirueats_online_food_delivery_system.backend.Repostory.UserRepostory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,7 +18,7 @@ import java.util.UUID;
 public class ProfileServiceImpl implements  ProfileService{
 
       private final UserRepostory userRepostory;
-    private final PasswordEncoder passwordEncoder;
+      private final PasswordEncoder passwordEncoder;
       
 
 
@@ -32,6 +33,13 @@ public class ProfileServiceImpl implements  ProfileService{
         throw  new ResponseStatusException(HttpStatus.CONFLICT,"Email already exists");
 
 
+    }
+
+    @Override
+    public ProfileResponse getProfile(String email) {
+          UserEntity existingUser =  userRepostory.findByEmail(email)
+                   .orElseThrow(()-> new UsernameNotFoundException("User not found" + email));
+          return convertToProfileResponse(existingUser);
     }
 
     private ProfileResponse convertToProfileResponse(UserEntity newProfile) {
