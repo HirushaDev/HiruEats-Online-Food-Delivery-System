@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.security.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -35,7 +36,7 @@ public class UserEntity {
 
      @CreationTimestamp
      @Column(updatable = false)
-     private Timestamp createdAt;
+     private LocalDateTime createdAt;
      @UpdateTimestamp
-     private Timestamp updatedAt;
+     private LocalDateTime updatedAt;
 }
