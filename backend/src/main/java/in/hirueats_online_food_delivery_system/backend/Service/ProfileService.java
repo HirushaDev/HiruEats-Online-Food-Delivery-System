@@ -12,4 +12,12 @@ public interface ProfileService {
       void sendResetOtp(String email);
 
       void resetPassword(String email, String otp, String newPassword);
+
+      void sendOtp(String userId);
+
+      void verifyOtp(String userId, String otp);
+
+      String getLoggedUserId(String email);
+
+
 }
