@@ -1,5 +1,6 @@
 package in.hirueats_online_food_delivery_system.backend.Controller;
 
+import in.hirueats_online_food_delivery_system.backend.Filter.JwtRequestFilter;
 import in.hirueats_online_food_delivery_system.backend.IO.AuthRequest;
 import in.hirueats_online_food_delivery_system.backend.IO.AuthResponse;
 import in.hirueats_online_food_delivery_system.backend.IO.ResetPasswordRequest;
@@ -77,8 +78,8 @@ public class AuthController {
      }
 
      @GetMapping("/is-authenticated")
-     public ResponseEntity<Boolean> isAuthenticated(@CurrentSecurityContext(expression = "authentication?.name") String email) 
-      {
+     public ResponseEntity<Boolean> isAuthenticated(
+               @CurrentSecurityContext(expression = "authentication?.name") String email) {
           return ResponseEntity.ok(email != null);
      }
 
@@ -99,13 +100,27 @@ public class AuthController {
                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to reset password");
           }
      }
-  
+
      @PostMapping("/send-otp")
-        public void sendVerifyOtp(@CurrentSecurityContext(expression = "authentication?.name") String email) {
+     public void sendVerifyOtp(@CurrentSecurityContext(expression = "authentication?.name") String email) {
           try {
                profileService.sendOtp(email);
           } catch (Exception e) {
                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send OTP");
+          }
+     }
+
+     @PostMapping("/verify-otp")
+     public void verifyOtp(@RequestBody Map<String, Object> request,
+               @CurrentSecurityContext(expression = "authentication?.name") String email) {
+
+          if (request.get("otp").toString() == null) {
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP is required");
+          }
+          try {
+               profileService.verifyOtp(email, request.get("otp").toString());
+          } catch (Exception e) {
+               throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to verify OTP");
           }
      }
 }
