@@ -3,6 +3,7 @@ package in.hirueats_online_food_delivery_system.backend.Controller;
 import in.hirueats_online_food_delivery_system.backend.IO.AuthRequest;
 import in.hirueats_online_food_delivery_system.backend.IO.AuthResponse;
 import in.hirueats_online_food_delivery_system.backend.Service.AppUserDetailsService;
+import in.hirueats_online_food_delivery_system.backend.Service.ProfileService;
 import in.hirueats_online_food_delivery_system.backend.Util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -31,6 +34,7 @@ public class AuthController {
      private final AuthenticationManager authenticationManager;
      private final AppUserDetailsService appUserDetailsService;
      private final JwtUtil jwtUtil;
+     private final ProfileService profileService;
 
      @PostMapping("/login")
      public ResponseEntity<?> login(@RequestBody AuthRequest request) {
@@ -76,4 +80,12 @@ public class AuthController {
           return ResponseEntity.ok(email != null);
      }
 
+     @PostMapping("/send-reset-otp")
+     public void sendResetOtp(@RequestParam String email) {
+          try {
+               profileService.sendResetOtp(email);
+          } catch (Exception e) {
+               throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send OTP");
+          }
+     }
 }
