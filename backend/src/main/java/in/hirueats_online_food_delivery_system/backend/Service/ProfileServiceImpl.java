@@ -88,7 +88,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void resetPassword(String email, String otp, String newPassword) {   
+    public void resetPassword(String email, String otp, String newPassword) {
         UserEntity existingUser = userRepostory.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found" + email));
 
@@ -114,7 +114,32 @@ public class ProfileServiceImpl implements ProfileService {
         return existingUser.getUserId();
     }
 
+    @Override
+    public void sendOtp(String email) {
+        UserEntity existingUser = userRepostory.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found" + email));
 
+        if (existingUser.getIsAccountVerified() != null && existingUser.getIsAccountVerified()) {
+            throw new RuntimeException("Account is already verified");
+        }
+        // Generate 6 digit otp
+        String otp = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+        // Set otp expired time 24 Hours
+        long expiryTime = System.currentTimeMillis() + 24 * 60 * 60 * 1000;
+        // Update user with otp and expired time
+        existingUser.setVerifyOtp(otp);
+        existingUser.setVerifyOtpExpireAt(expiryTime);
+        userRepostory.save(existingUser);
 
+        try {
+            emailService.sendOtpEmail(existingUser.getEmail(), existingUser.getName(), otp);
+        } catch (Exception e) {
+            System.err.println(" [ProfileServiceImpl.sendOtp] Failed to send OTP email");
+            System.err.println("   Email: " + existingUser.getEmail());
+            System.err.println("   Exception: " + e.getMessage());
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send OTP");
+        }
+    }
 
 }
