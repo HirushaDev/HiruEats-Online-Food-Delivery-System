@@ -2,9 +2,11 @@ package in.hirueats_online_food_delivery_system.backend.Controller;
 
 import in.hirueats_online_food_delivery_system.backend.IO.AuthRequest;
 import in.hirueats_online_food_delivery_system.backend.IO.AuthResponse;
+import in.hirueats_online_food_delivery_system.backend.IO.ResetPasswordRequest;
 import in.hirueats_online_food_delivery_system.backend.Service.AppUserDetailsService;
 import in.hirueats_online_food_delivery_system.backend.Service.ProfileService;
 import in.hirueats_online_food_delivery_system.backend.Util.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -86,6 +88,15 @@ public class AuthController {
                profileService.sendResetOtp(email);
           } catch (Exception e) {
                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send OTP");
+          }
+     }
+
+     @PostMapping("/reset-password")
+     public void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+          try {
+               profileService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
+          } catch (Exception e) {
+               throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to reset password");
           }
      }
 }

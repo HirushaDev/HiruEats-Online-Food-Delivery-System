@@ -86,4 +86,24 @@ public class ProfileServiceImpl implements ProfileService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send OTP");
         }
     }
+
+    @Override
+    public void resetPassword(String email, String otp, String newPassword) {   
+        UserEntity existingUser = userRepostory.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found" + email));
+
+        if (existingUser.getResetOtp() == null || !existingUser.getResetOtp().equals(otp)) {
+            throw new RuntimeException("Invalid OTP");
+        }
+
+        if (existingUser.getResetOtpExpiredAt() < System.currentTimeMillis()) {
+            throw new RuntimeException("OTP has expired");
+        }
+
+        existingUser.setPassword(passwordEncoder.encode(newPassword));
+        existingUser.setResetOtp(null);
+        existingUser.setResetOtpExpiredAt(0L);
+        userRepostory.save(existingUser);
+
+    }
 }
