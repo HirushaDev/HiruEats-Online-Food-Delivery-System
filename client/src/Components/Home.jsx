@@ -22,18 +22,13 @@ const Home = () => {
 
       {/* TOP BUTTONS */}
       <div className="absolute top-32 right-8 z-30 flex gap-4">
-        <Link
-          to="/login"
-          className="w-32 h-12 flex items-center justify-center bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold rounded-full hover:scale-105 transition shadow-lg"
-        >
-          Login
-        </Link>
+       
 
         <Link
-          to="/register"
+          to="/login"
           className="w-32 h-12 flex items-center justify-center border-2 border-orange-500 text-orange-500 font-bold rounded-full hover:bg-orange-500 hover:text-white transition"
         >
-          Register
+          Join Now
         </Link>
       </div>
 
