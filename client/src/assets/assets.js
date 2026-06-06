@@ -12,6 +12,7 @@ import customer3 from './customer3.jpg';
 import owner from './owner.jpg';
 import Delivery from './Delivery.jpg';
 import Operations from './Operations.jpg';
+import backgroundLogin from './backgroundLogin.png';
 
 
 export const assets = {
@@ -29,5 +30,6 @@ export const assets = {
   owner,
   Delivery,
   Operations,
+  backgroundLogin,
 
 };
