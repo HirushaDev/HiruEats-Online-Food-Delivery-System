@@ -64,7 +64,7 @@ const PublicNavbar = () => {
       </div>
 
       {/* MAIN NAVBAR */}
-      <nav className="sticky top-0 left-0 w-full z-50 bg-linear-to-r from-black via-gray-900 to-black shadow-xl border-b border-orange-500/30">
+      <nav className="sticky top-0 left-0 w-full z-9999 bg-linear-to-r from-black via-gray-900 to-black shadow-xl border-b border-orange-500/30">
         <div className="max-w-7xl mx-auto px-6 lg:px-10">
           <div className="flex items-center justify-between h-20">
             {/* LOGO */}
