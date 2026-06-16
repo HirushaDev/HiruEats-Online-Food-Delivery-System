@@ -1,135 +1,181 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from "react-icons/fa";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaTwitter,
+  FaLinkedinIn,
+  FaPaperPlane,
+  FaRegCopyright,
+} from "react-icons/fa";
+
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Footer = () => {
-  const currentYear = new Date().getFullYear();
+  const footerRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".footer-reveal", {
+        y: 80,
+        opacity: 0,
+        duration: 1.2,
+        ease: "power4.out",
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: "top 85%",
+        },
+      });
+    });
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <footer className="relative bg-black text-white pt-24 pb-10 overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-orange-500/10 blur-3xl rounded-full"></div>
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-orange-600/10 blur-3xl rounded-full"></div>
-      </div>
+    <footer
+      ref={footerRef}
+      className="relative overflow-hidden bg-[#080808] border-t border-white/10"
+    >
+      {/* Glow Effects */}
+      <div className="absolute top-0 left-1/4 w-72 h-72 bg-orange-500/10 rounded-full blur-[120px]" />
+      <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-orange-400/10 rounded-full blur-[120px]" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6">
-        {/*  BRAND CENTER */}
-        <div className="text-center mb-16">
-          <h2 className="text-1xl font-extrabold bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-            HiruEats
-          </h2>
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-20 relative z-10">
+        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-12">
+          
+          {/* Brand */}
+          <div className="footer-reveal">
+            <h2 className="text-3xl font-bold text-white">
+              Hiru<span className="text-orange-500">Eats</span>
+            </h2>
 
-          <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-base leading-relaxed">
-            Premium food delivery experience bringing fresh, hot meals from top
-            restaurants straight to your doorstep — fast, reliable, and
-            delicious.
-          </p>
-
-          {/* Social */}
-          <div className="flex justify-center gap-5 mt-6">
-            <FaFacebook className="text-xl hover:text-orange-400 cursor-pointer transition" />
-            <FaTwitter className="text-xl hover:text-orange-400 cursor-pointer transition" />
-            <FaInstagram className="text-xl hover:text-orange-400 cursor-pointer transition" />
-            <FaYoutube className="text-xl hover:text-orange-400 cursor-pointer transition" />
-          </div>
-        </div>
-
-        {/*  GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
-          {/* Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-orange-400">
-              Quick Links
-            </h3>
-            <div className="space-y-2 text-gray-400">
-              <Link to="/menu" className="hover:text-white block">
-                Menu
-              </Link>
-              <Link to="/about" className="hover:text-white block">
-                About
-              </Link>
-              <Link to="/offers" className="hover:text-white block">
-                Offers
-              </Link>
-              <Link to="/contact" className="hover:text-white block">
-                Contact
-              </Link>
-            </div>
-          </div>
-
-          {/* Support */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-orange-400">
-              Support
-            </h3>
-            <div className="space-y-2 text-gray-400">
-              <Link to="/help" className="hover:text-white block">
-                Help Center
-              </Link>
-              <Link to="/faq" className="hover:text-white block">
-                FAQs
-              </Link>
-              <Link to="/terms" className="hover:text-white block">
-                Terms
-              </Link>
-              <Link to="/privacy" className="hover:text-white block">
-                Privacy
-              </Link>
-            </div>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4 text-orange-400">
-              Contact
-            </h3>
-
-            <div className="space-y-4 text-gray-400 flex flex-col items-center md:items-start">
-              <div className="flex items-center gap-2">
-                <MapPin size={18} /> Colombo, Sri Lanka
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone size={18} /> +94 77 695 7704
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail size={18} /> info@hirueats.com
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/*  NEWSLETTER CENTER */}
-
-        <div className="mt-20 flex justify-end">
-          <div className="w-full max-w-xl text-right">
-            <h3 className="text-2xl font-bold mb-2">Join Our Newsletter</h3>
-
-            <p className="text-gray-400 mb-6">
-              Get updates, offers & delicious deals
+            <p className="mt-5 text-gray-400 leading-relaxed">
+              Delivering your favorite meals fast, fresh, and right to
+              your doorstep.
             </p>
 
-            <form className="flex flex-col sm:flex-row gap-3 justify-end">
+            <div className="flex gap-4 mt-6">
+              {[FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn].map(
+                (Icon, index) => (
+                  <a
+                    key={index}
+                    href="#"
+                    className="w-11 h-11 flex items-center justify-center rounded-full border border-white/10 text-gray-400 hover:text-orange-500 hover:border-orange-500 hover:-translate-y-1 transition-all duration-300"
+                  >
+                    <Icon />
+                  </a>
+                )
+              )}
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="footer-reveal">
+            <h3 className="text-white text-lg font-semibold mb-5">
+              Quick Links
+            </h3>
+
+            <ul className="space-y-3">
+              {[
+                "Home",
+                "About",
+                "Restaurants",
+                "Offers",
+                "Contact",
+              ].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-orange-500 transition-all duration-300 hover:translate-x-2 inline-block"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div className="footer-reveal">
+            <h3 className="text-white text-lg font-semibold mb-5">
+              Services
+            </h3>
+
+            <ul className="space-y-3">
+              {[
+                "Food Delivery",
+                "Fast Delivery",
+                "Online Payments",
+                "Restaurant Partners",
+                "Tracking Orders",
+              ].map((item) => (
+                <li key={item}>
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-orange-500 transition-all duration-300 hover:translate-x-2 inline-block"
+                  >
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div className="footer-reveal">
+            <h3 className="text-white text-lg font-semibold mb-5">
+              Stay Updated
+            </h3>
+
+            <p className="text-gray-400 mb-5">
+              Subscribe for exclusive offers and latest updates.
+            </p>
+
+            <div className="flex items-center bg-white/5 border border-white/10 rounded-full overflow-hidden">
               <input
                 type="email"
-                placeholder="      Enter your email"
-                className="flex-1 px-10 py-6 rounded-full bg-white/10 border border-white/20 focus:border-orange-500 outline-none text-white"
+                placeholder="Your email"
+                className="bg-transparent px-5 py-4 flex-1 text-white outline-none"
               />
 
-              <button className="w-40 h-13 px-6 py-3 bg-orange-500 hover:bg-orange-600 rounded-full font-bold flex items-center justify-center gap-2">
-                Subscribe <Send size={18} />
+              <button className="w-full  h-full bg-orange-500 hover:bg-orange-600 px-1 py-5 text-black transition-all">
+                <FaPaperPlane />
               </button>
-            </form>
+            </div>
           </div>
         </div>
-        {/*  CLEAN SEPARATOR */}
-        <div className="my-30 flex justify-center">
-          <div className="w-40 h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent"></div>
-        </div>
-        {/* BOTTOM */}
-        <div className="mt-20 text-center text-gray-500 text-sm">
-          © {currentYear} <span>HiruEats</span> — All rights reserved
+
+        {/* Bottom */}
+        <div className="footer-reveal mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-gray-500 text-sm flex items-center gap-1">
+            <FaRegCopyright /> 2026 HiruEats. All rights reserved.
+          </p>
+
+          <div className="flex gap-6 text-sm">
+            <a
+              href="#"
+              className="text-gray-500 hover:text-orange-500 transition"
+            >
+              Privacy Policy
+            </a>
+
+            <a
+              href="#"
+              className="text-gray-500 hover:text-orange-500 transition"
+            >
+              Terms of Service
+            </a>
+
+            <a
+              href="#"
+              className="text-gray-500 hover:text-orange-500 transition"
+            >
+              Cookies
+            </a>
+          </div>
         </div>
       </div>
     </footer>
