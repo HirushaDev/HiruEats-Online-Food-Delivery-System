@@ -130,25 +130,50 @@ public class AuthController {
      }
 
      @PostMapping("/send-otp")
-     public void sendVerifyOtp(@CurrentSecurityContext(expression = "authentication?.name") String email) {
+     public ResponseEntity<?> sendVerifyOtp(@CurrentSecurityContext(expression = "authentication?.name") String email) {
           try {
                profileService.sendOtp(email);
+               Map<String, Object> body = new HashMap<>();
+               body.put("message", "Verification OTP sent to " + email);
+               return ResponseEntity.ok(body);
+          } catch (RuntimeException e) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", e.getMessage());
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
           } catch (Exception e) {
-               throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send OTP");
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "Failed to send OTP. Please try again.");
+               return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
           }
      }
 
      @PostMapping("/verify-otp")
-     public void verifyOtp(@RequestBody Map<String, Object> request,
+     public ResponseEntity<?> verifyOtp(@RequestBody Map<String, Object> request,
                @CurrentSecurityContext(expression = "authentication?.name") String email) {
 
-          if (request.get("otp").toString() == null) {
-               throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "OTP is required");
+          if (request.get("otp") == null || request.get("otp").toString().isEmpty()) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "OTP is required");
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
           }
           try {
                profileService.verifyOtp(email, request.get("otp").toString());
+               Map<String, Object> body = new HashMap<>();
+               body.put("message", "Email verified successfully");
+               return ResponseEntity.ok(body);
+          } catch (RuntimeException e) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", e.getMessage());
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
           } catch (Exception e) {
-               throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to verify OTP");
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "Failed to verify OTP. Please try again.");
+               return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
           }
      }
 }

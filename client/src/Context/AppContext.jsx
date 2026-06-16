@@ -11,13 +11,16 @@ export const AppProvider = ({ children }) => {
     const BACKEND_URL = AppConstants.BACKEND_API_BASE_URL;
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userData, setUserData] = useState(null);
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
 
     const contextValue = {
         BACKEND_URL,
         isLoggedIn,
         setIsLoggedIn,
         userData,
-        setUserData
+        setUserData,
+        isEmailVerified,
+        setIsEmailVerified
     };
 
      return (

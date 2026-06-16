@@ -173,7 +173,7 @@ function LoginForm({ onSwitch }) {
       setUserData({ email: userEmail, token });
 
       toast.success("Signed in successfully!");
-      navigate("/");
+      navigate("/user-home");
     } catch (error) {
       const message =
         error?.response?.data?.message ||
