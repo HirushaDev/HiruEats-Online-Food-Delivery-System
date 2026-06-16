@@ -1,35 +1,24 @@
 import logo from './HiruEatsLogo.png';
-import burger from './buger.jpg';
+import burger from './burger.jpg';
 import pizza from './pizza.jpg';
-import tea from './tea.png';
-import pasta from './pasta.png';
-import cake from './cake.jpg'
-import chips from './chips.jpg';
-import pizza1 from './pizza1.jpg';
-import customer1 from './customer1.jpg';
-import customer2 from './customer2.jpg';
-import customer3 from './customer3.jpg';
-import owner from './owner.jpg';
-import Delivery from './Delivery.jpg';
-import Operations from './Operations.jpg';
-import backgroundLogin from './backgroundLogin.png';
+import Rainbow_Sushi_Roll from './Rainbow_Sushi_Roll.jpg';
+import Creamy_Alfredo_Pasta from './Creamy_Alfredo_Pasta.jpg';
+import Chocolate_Lava_Cake from './Chocolate_Lava_Cake.jpg';
+import Mango_Tango_Smoothie from './Mango_Tango_Smoothie.jpg';
+import appMockup from './AppMockUp.jpg';
+import HowToWorks from './HowToWorks.jpg';
+import Login_Background from './Login_Back.jpg';
 
 
 export const assets = {
   logo,
   burger,
   pizza,
-  tea,
-  pasta,
-  cake,
-  chips,
-  pizza1,
-  customer1,
-  customer2,
-  customer3,
-  owner,
-  Delivery,
-  Operations,
-  backgroundLogin,
-
+  Rainbow_Sushi_Roll,
+  Creamy_Alfredo_Pasta,
+  Chocolate_Lava_Cake,
+  Mango_Tango_Smoothie,
+  appMockup,
+  HowToWorks,
+  Login_Background,
 };
