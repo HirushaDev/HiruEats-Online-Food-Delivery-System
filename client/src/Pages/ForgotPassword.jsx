@@ -140,7 +140,7 @@ const ForgotPassword = () => {
   return (
     <div
       className="relative min-h-screen flex justify-center items-center bg-cover bg-center"
-      style={{ backgroundImage: `url(${assets.backgroundLogin})` }}
+      style={{ backgroundImage: `url(${assets.Login_Background})` }}
     >
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/80"></div>
