@@ -3,6 +3,8 @@ import { assets } from "../assets/assets";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock, FaKey } from "react-icons/fa";
 import { AppConstants } from "../Util/constants";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
@@ -11,100 +13,121 @@ const ForgotPassword = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const otpRefs = useRef([]);
 
-  const readResponseMessage = async (response) => {
-    const contentType = response.headers.get("content-type") || "";
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (contentType.includes("application/json")) {
-      const data = await response.json().catch(() => ({}));
-      return data?.message || data?.error || "";
-    }
-
-    return (await response.text().catch(() => "")).trim();
-  };
-
-  // Step 1: Send OTP
+  // ── Step 1: Send OTP ────────────────────────────────────────────────────────
   const handleSendOtp = async (e) => {
     e.preventDefault();
-    setError("");
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+    if (!emailRegex.test(email.trim())) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const response = await fetch(
-        `${AppConstants.BACKEND_API_BASE_URL}/send-reset-otp?email=${encodeURIComponent(email)}`,
-        {
-          method: "POST",
-        }
+      const response = await axios.post(
+        `${AppConstants.BACKEND_API_BASE_URL}/send-reset-otp`,
+        null,
+        { params: { email: email.trim() } }
       );
-
-      if (!response.ok) {
-        const message = await readResponseMessage(response);
-        throw new Error(message || "Failed to send OTP");
-      }
-
+      toast.success(response.data?.message || "OTP sent to your email");
       setStep(2);
-    } catch (err) {
-      setError(err.message || "Something went wrong");
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Failed to send OTP";
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Step 2: Verify OTP
-  const handleVerifyOtp = async (e) => {
+  // ── Step 2: Verify OTP (client-side length check, real verify on step 3) ──
+  const handleVerifyOtp = (e) => {
     e.preventDefault();
-    setError("");
     const otpString = otp.join("");
     if (otpString.length !== 6) {
-      setError("Please enter the full 6-digit OTP");
+      toast.error("Please enter the full 6-digit OTP");
       return;
     }
     setStep(3);
   };
 
-  // Step 3: Reset Password
+  // ── Step 3: Reset Password ───────────────────────────────────────────────────
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    setError("");
     const otpString = otp.join("");
+
     if (otpString.length !== 6) {
-      setError("Please enter the full 6-digit OTP");
+      toast.error("Please enter the full 6-digit OTP");
+      return;
+    }
+    if (!newPassword) {
+      toast.error("Please enter a new password");
       return;
     }
     if (newPassword.length < 6) {
-      setError("Password must be at least 6 characters");
+      toast.error("Password must be at least 6 characters");
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
+
     setIsSubmitting(true);
     try {
-      const response = await fetch(
+      const response = await axios.post(
         `${AppConstants.BACKEND_API_BASE_URL}/reset-password`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp: otpString, newPassword }),
-        }
+        { email: email.trim(), otp: otpString, newPassword }
       );
-
-      if (!response.ok) {
-        const message = await readResponseMessage(response);
-        throw new Error(message || "Failed to reset password");
-      }
-
+      toast.success(response.data?.message || "Password reset successfully!");
       setEmail("");
       setOtp(["", "", "", "", "", ""]);
       setNewPassword("");
       setConfirmPassword("");
       setStep(1);
       navigate("/login");
-    } catch (err) {
-      setError(err.message || "Something went wrong");
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Failed to reset password";
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // ── Resend OTP (reuse step 1 handler with toast feedback) ────────────────────
+  const handleResendOtp = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post(
+        `${AppConstants.BACKEND_API_BASE_URL}/send-reset-otp`,
+        null,
+        { params: { email: email.trim() } }
+      );
+      toast.success(response.data?.message || "OTP resent to your email");
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Failed to resend OTP";
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -176,10 +199,6 @@ const ForgotPassword = () => {
         </div>
 
         <form className="flex flex-col gap-4">
-          {error && (
-            <p className="text-red-400 text-sm text-center">{error}</p>
-          )}
-
           {/* Subtitle */}
           <p className="text-gray-300 text-center text-sm leading-relaxed mb-4">
             {stepDescriptions[step]}
@@ -249,7 +268,7 @@ const ForgotPassword = () => {
               <p className="text-center text-gray-400 text-sm">
                 Didn't receive OTP?{" "}
                 <span
-                  onClick={handleSendOtp}
+                  onClick={handleResendOtp}
                   className="text-orange-500 underline cursor-pointer"
                 >
                   Resend

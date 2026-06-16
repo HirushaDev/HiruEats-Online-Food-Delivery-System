@@ -17,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,20 +85,47 @@ public class AuthController {
      }
 
      @PostMapping("/send-reset-otp")
-     public void sendResetOtp(@RequestParam String email) {
+     public ResponseEntity<?> sendResetOtp(@RequestParam String email) {
           try {
                profileService.sendResetOtp(email);
+               Map<String, Object> body = new HashMap<>();
+               body.put("message", "OTP sent to " + email);
+               return ResponseEntity.ok(body);
+          } catch (UsernameNotFoundException e) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "No account found with this email");
+               return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
           } catch (Exception e) {
-               throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to send OTP");
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "Failed to send OTP. Please try again.");
+               return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
           }
      }
 
      @PostMapping("/reset-password")
-     public void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
           try {
                profileService.resetPassword(request.getEmail(), request.getOtp(), request.getNewPassword());
+               Map<String, Object> body = new HashMap<>();
+               body.put("message", "Password reset successfully");
+               return ResponseEntity.ok(body);
+          } catch (UsernameNotFoundException e) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "No account found with this email");
+               return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+          } catch (RuntimeException e) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", e.getMessage());
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
           } catch (Exception e) {
-               throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to reset password");
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "Failed to reset password. Please try again.");
+               return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
           }
      }
 
