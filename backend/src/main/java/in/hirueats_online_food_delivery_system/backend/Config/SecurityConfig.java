@@ -38,6 +38,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
+                
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/register", "/send-reset-otp", "/reset-password", "/logout")
                         .permitAll().anyRequest().authenticated())

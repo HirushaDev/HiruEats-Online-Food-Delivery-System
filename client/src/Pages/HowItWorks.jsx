@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Fragment } from "react";
 import { motion, useMotionValue, useTransform, useInView, animate } from "framer-motion";
 import { FiSearch, FiZap, FiSmile } from "react-icons/fi";
 import { MdFastfood } from "react-icons/md";
@@ -393,10 +393,10 @@ export default function HowItWorks() {
         {/* ── step cards ── */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr_auto_1fr] gap-6 lg:gap-0 items-stretch">
           {STEPS.map((step, i) => (
-            <>
-              <StepCard key={step.step} step={step} index={i} />
+            <Fragment key={step.step}>
+              <StepCard step={step} index={i} />
               {i < STEPS.length - 1 && <Connector key={`conn-${i}`} index={i} />}
-            </>
+            </Fragment>
           ))}
         </div>
 

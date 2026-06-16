@@ -207,7 +207,7 @@ const ShowcaseSection = () => {
       </div>
 
       {/* Add custom animations via style tag or CSS module - these are minimal TailCSS extensions */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeInUp {
           from {
             opacity: 0;

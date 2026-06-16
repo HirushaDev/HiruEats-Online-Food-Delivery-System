@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {
   FiMail, FiLock, FiUser, FiEye, FiEyeOff,
 } from "react-icons/fi";
@@ -6,7 +6,8 @@ import { FcGoogle } from "react-icons/fc";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
 import { assets } from "../assets/assets";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../Context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { AppConstants } from "../Util/constants";
@@ -129,6 +130,61 @@ function Divider({ text }) {
 function LoginForm({ onSwitch }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { setIsLoggedIn, setUserData } = useContext(AppContext);
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    // ── frontend validation ──
+    if (!email.trim()) {
+      toast.error("Please enter your email");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    if (!password) {
+      toast.error("Please enter your password");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await axios.post(
+        `${AppConstants.BACKEND_API_BASE_URL}/login`,
+        { email: email.trim(), password },
+        { withCredentials: true }
+      );
+
+      const { email: userEmail, token } = response.data;
+
+      // store auth state
+      setIsLoggedIn(true);
+      setUserData({ email: userEmail, token });
+
+      toast.success("Signed in successfully!");
+      navigate("/");
+    } catch (error) {
+      const message =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Failed to sign in";
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -154,14 +210,19 @@ function LoginForm({ onSwitch }) {
       />
 
       <Link
-  to="/forgot-password"
-  className="text-xs text-orange-500 mb-4 cursor-pointer"
->
-  Forgot password?
-</Link>
+        to="/forgot-password"
+        className="text-xs text-orange-500 mb-4 cursor-pointer"
+      >
+        Forgot password?
+      </Link>
 
-      <button className="w-full py-3 rounded-xl bg-orange-500 text-white font-bold mb-4 cursor-pointer">
-        Sign in
+      <button
+        type="button"
+        onClick={handleLogin}
+        disabled={isSubmitting}
+        className="w-full py-3 rounded-xl bg-orange-500 text-white font-bold mb-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
+      >
+        {isSubmitting ? "Signing in..." : "Sign in"}
       </button>
 
       <p className="text-sm text-center">

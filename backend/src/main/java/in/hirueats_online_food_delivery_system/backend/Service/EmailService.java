@@ -51,7 +51,7 @@ public class EmailService {
                     "    .features { display: flex; justify-content: space-between; margin: 30px 0; }" +
                     "    .feature { text-align: center; flex: 1; }" +
                     "    .feature-icon { font-size: 32px; margin-bottom: 10px; }" +
-                    "    .feature-text { font-size: 12px; color: #666; }" +
+                    "    .feature-text { font-size: 12px; color: #666; gap: 10px; }" +
                     "    .btn { display: inline-block; background: #ff6b35; color: white; padding: 14px 35px; text-decoration: none; border-radius: 50px; font-weight: bold; margin: 20px 0; transition: all 0.3s; }"
                     +
                     "    .btn:hover { background: #e55a2b; transform: translateY(-2px); }" +
@@ -65,7 +65,7 @@ public class EmailService {
                     "<body>" +
                     "<div class='container'>" +
                     "    <div class='header'>" +
-                    "        <h1>🍕 HiruEats</h1>" +
+                    "        <h1> HiruEats</h1>" +
                     "        <p>Online Food Delivery System</p>" +
                     "    </div>" +
                     "    <div class='content'>" +
@@ -107,10 +107,10 @@ public class EmailService {
                     "        <p style='color: #666; font-size: 14px; text-align: center;'><strong>What's next?</strong></p>"
                     +
                     "        <ul style='color: #555; font-size: 14px; line-height: 1.8;'>" +
-                    "            <li>✅ Complete your profile for personalized recommendations</li>" +
-                    "            <li>✅ Add your delivery address for faster checkout</li>" +
-                    "            <li>✅ Explore 200+ restaurants near you</li>" +
-                    "            <li>✅ Download our mobile app for exclusive deals</li>" +
+                    "            <li> 1. Complete your profile for personalized recommendations</li>" +
+                    "            <li> 2. Add your delivery address for faster checkout</li>" +
+                    "            <li> 3. Explore 200+ restaurants near you</li>" +
+                    "            <li> 4. Download our mobile app for exclusive deals</li>" +
                     "        </ul>" +
                     "    </div>" +
                     "    <div class='footer'>" +
@@ -147,7 +147,7 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setTo(toEmail);
-            helper.setSubject("🔐 Password Reset Request - HiruEats");
+            helper.setSubject(" Password Reset Request - HiruEats");
             helper.setFrom(fromEmail);
 
             String htmlContent = "<!DOCTYPE html>" +
@@ -186,12 +186,12 @@ public class EmailService {
                     "<body>" +
                     "<div class='container'>" +
                     "    <div class='header'>" +
-                    "        <h1>🍕 HiruEats</h1>" +
+                    "        <h1> HiruEats</h1>" +
                     "        <p>Online Food Delivery System</p>" +
                     "    </div>" +
                     "    <div class='content'>" +
                     "        <div class='reset-text'>Password Reset Request, <span class='highlight'>" + name
-                    + "</span>! 🔐</div>" +
+                    + "</span>! </div>" +
                     "        <p style='color: #555; line-height: 1.6;'>We received a request to reset the password for your <strong>HiruEats</strong> account. Use the OTP below to complete the password reset process.</p>"
                     +
                     "        " +
@@ -202,7 +202,7 @@ public class EmailService {
                     "                <div class='otp-code'>" + otp + "</div>" +
                     "            </div>" +
                     "            <div class='timer-note'>" +
-                    "                ⏰ This OTP is valid for <strong>5 minutes</strong> from the time of this email.<br>"
+                    "                 This OTP is valid for <strong>5 minutes</strong> from the time of this email.<br>"
                     +
                     "                For security reasons, do not share this OTP with anyone." +
                     "            </div>" +
@@ -214,7 +214,7 @@ public class EmailService {
                     "        </div>" +
                     "        " +
                     "        <div class='security-note'>" +
-                    "            <strong>🛡️ Didn't request this?</strong><br>" +
+                    "            <strong> Didn't request this?</strong><br>" +
                     "            If you didn't request a password reset, please ignore this email or contact our support team immediately. Your password remains secure unless you click the link above and create a new password."
                     +
                     "        </div>" +
@@ -223,15 +223,15 @@ public class EmailService {
                     "        <p style='color: #666; font-size: 14px; text-align: center;'><strong>Security Tips:</strong></p>"
                     +
                     "        <ul style='color: #555; font-size: 14px; line-height: 1.8;'>" +
-                    "            <li>✅ Never share your OTP with anyone, even if they claim to be from HiruEats</li>" +
-                    "            <li>✅ Create a strong, unique password for your account</li>" +
-                    "            <li>✅ Enable two-factor authentication for extra security</li>" +
-                    "            <li>✅ Always verify you're on the official HiruEats website</li>" +
+                    "            <li> 1.Never share your OTP with anyone, even if they claim to be from HiruEats</li>" +
+                    "            <li> 2.Create a strong, unique password for your account</li>" +
+                    "            <li> 3.Enable two-factor authentication for extra security</li>" +
+                    "            <li> 4.Always verify you're on the official HiruEats website</li>" +
                     "        </ul>" +
                     "    </div>" +
                     "    <div class='footer'>" +
                     "        <p>📍 Delivery across Colombo & Suburbs</p>" +
-                    "        <p>📞 Customer Support: +94 77 695 7704 | 📧 support@hirueats.com</p>" +
+                    "        <p>📞 Customer Support: +94 77 695 7704 |  support@hirueats.com</p>" +
                     "        <div class='social-links'>" +
                     "            <a href='#'>Facebook</a> | " +
                     "            <a href='#'>Instagram</a> | " +
@@ -264,9 +264,9 @@ public class EmailService {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setTo(toEmail);
-            helper.setSubject("✅ Your Verification Code - HiruEats");
+            helper.setSubject(" Your Verification Code - HiruEats");
             helper.setFrom(fromEmail);
-            System.out.println("📧 [sendOtpEmail] From: " + fromEmail + " | To: " + toEmail);
+            System.out.println(" [sendOtpEmail] From: " + fromEmail + " | To: " + toEmail);
 
             String htmlContent = "<!DOCTYPE html>" +
                     "<html>" +
@@ -304,11 +304,11 @@ public class EmailService {
                     "<body>" +
                     "<div class='container'>" +
                     "    <div class='header'>" +
-                    "        <h1>🍕 HiruEats</h1>" +
+                    "        <h1> HiruEats</h1>" +
                     "        <p>Online Food Delivery System</p>" +
                     "    </div>" +
                     "    <div class='content'>" +
-                    "        <div class='verify-text'>Welcome! ✅</div>" +
+                    "        <div class='verify-text'>Welcome! </div>" +
                     "        <p style='color: #555; line-height: 1.6;'>Thank you for creating an account with <strong>HiruEats</strong>. Please verify your email address to complete your registration and start ordering delicious food!</p>"
                     +
                     "        " +
@@ -319,18 +319,18 @@ public class EmailService {
                     "                <div class='otp-code'>" + otp + "</div>" +
                     "            </div>" +
                     "            <div class='timer-note'>" +
-                    "                ⏰ This OTP is valid for <strong>24 Hours</strong> from the time of this email.<br>"
+                    "                 This OTP is valid for <strong>24 Hours</strong> from the time of this email.<br>"
                     +
                     "                Enter this code on the verification page to activate your account." +
                     "            </div>" +
                     "        </div>" +
                     "        " +
                     "        <div style='text-align: center;'>" +
-                    "            <a href='https://hirueats.com/verify' class='btn'>✅ Verify My Account →</a>" +
+                    "            <a href='https://hirueats.com/verify' class='btn'> Verify My Account →</a>" +
                     "        </div>" +
                     "        " +
                     "        <div class='benefits-note'>" +
-                    "            <strong>🎁 What you get after verification:</strong><br>" +
+                    "            <strong> What you get after verification:</strong><br>" +
                     "            • Full access to all restaurant menus<br>" +
                     "            • Exclusive welcome offer: 20% OFF your first order<br>" +
                     "            • Earn reward points on every purchase<br>" +
@@ -341,10 +341,10 @@ public class EmailService {
                     "        <p style='color: #666; font-size: 14px; text-align: center;'><strong>Why verify your email?</strong></p>"
                     +
                     "        <ul style='color: #555; font-size: 14px; line-height: 1.8;'>" +
-                    "            <li>✅ Secure your account and recover password easily</li>" +
-                    "            <li>✅ Receive order confirmations and delivery updates</li>" +
-                    "            <li>✅ Get personalized restaurant recommendations</li>" +
-                    "            <li>✅ Access exclusive deals and promotional offers</li>" +
+                    "            <li>1. Secure your account and recover password easily</li>" +
+                    "            <li>2. Receive order confirmations and delivery updates</li>" +
+                    "            <li>3. Get personalized restaurant recommendations</li>" +
+                    "            <li>4. Access exclusive deals and promotional offers</li>" +
                     "        </ul>" +
                     "        " +
                     "        <p style='color: #888; font-size: 13px; text-align: center; margin-top: 20px;'>" +
