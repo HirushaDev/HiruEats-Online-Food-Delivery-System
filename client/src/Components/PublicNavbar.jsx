@@ -108,24 +108,7 @@ const PublicNavbar = () => {
                 <FaSearch className="text-lg group-hover:scale-125 transition-transform" />
               </button>
 
-              {/* PROFILE ICON */}
-              <div className="relative">
-                <button className="text-gray-300 hover:text-orange-400 transition duration-300 p-2 hover:bg-orange-500/10 rounded-lg group">
-                  <FaUser className="text-lg group-hover:scale-125 transition-transform" />
-                </button>
-              </div>
-
-              {/* CART ICON */}
-              <button className="relative text-gray-300 hover:text-orange-400 transition duration-300 p-2 hover:bg-orange-500/10 rounded-lg group">
-                <FaShoppingCart className="text-lg group-hover:scale-125 transition-transform" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-linear-to-r from-orange-500 to-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg shadow-orange-500/50 animate-pulse">
-                    {cartCount}
-                  </span>
-                )}
-              </button>
-
-              {/* MOBILE MENU BUTTON */}
+             {/* MOBILE MENU BUTTON */}
               <button
                 className="md:hidden text-gray-300"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
