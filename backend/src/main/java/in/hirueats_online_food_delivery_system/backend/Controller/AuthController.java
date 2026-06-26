@@ -73,6 +73,49 @@ public class AuthController {
           }
      }
 
+     @PostMapping("/admin/login")
+     public ResponseEntity<?> adminLogin(@RequestBody AuthRequest request) {
+          try {
+               authenticate(request.getEmail(), request.getPassword());
+               final UserDetails userDetails = appUserDetailsService.loadUserByUsername(request.getEmail());
+
+               boolean isAdmin = userDetails.getAuthorities().stream()
+                         .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+               if (!isAdmin) {
+                    Map<String, Object> error = new HashMap<>();
+                    error.put("error", true);
+                    error.put("message", "Access denied. Only administrators can log in.");
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+               }
+
+               final String jwtToken = jwtUtil.generateToken(userDetails);
+               ResponseCookie cookie = ResponseCookie.from("jwt", jwtToken)
+                         .httpOnly(true)
+                         .path("/")
+                         .maxAge(Duration.ofDays(1))
+                         .sameSite("Strict")
+                         .build();
+               return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+                         .body(new AuthResponse(request.getEmail(), jwtToken));
+
+          } catch (BadCredentialsException ex) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "email or password is incorrect");
+               return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+          } catch (DisabledException ex) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "account is disabled");
+               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+          } catch (Exception ex) {
+               Map<String, Object> error = new HashMap<>();
+               error.put("error", true);
+               error.put("message", "authentication failed");
+               return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+          }
+     }
+
      private void authenticate(String email, String password) {
           authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
 
