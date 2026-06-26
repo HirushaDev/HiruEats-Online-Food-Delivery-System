@@ -39,4 +39,11 @@ public class UserEntity {
      private LocalDateTime createdAt;
      @UpdateTimestamp
      private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "VARCHAR(10)")
+    private Role role;
+
+    @Builder.Default
+    private Boolean isAccountDisabled = false;
 }
