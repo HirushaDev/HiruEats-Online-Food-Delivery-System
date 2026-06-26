@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
 
-     private final OrderRepostory orderRepostory;
+    private final OrderRepostory orderRepostory;
 
     @Override
     public OrderResponse createOrderWithPayment(OrderRequest request) {
@@ -33,10 +33,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderResponse> getUserOrders(String userId) {
-        List<OrderEntity>  list = orderRepostory.findByUserId(userId);
+        List<OrderEntity> list = orderRepostory.findByUserId(userId);
         return list.stream().map(entity -> convertToResponse(entity)).collect(Collectors.toList());
 
     }
+
+    @Override
+    public void removeOrder(Long orderId) {
+        if (!orderRepostory.existsById(orderId)) {
+            throw new RuntimeException("Order not found");
+        }
+        orderRepostory.deleteById(orderId);
+    }
+
 
     private OrderEntity convertToEntity(OrderRequest request) {
        return OrderEntity.builder()

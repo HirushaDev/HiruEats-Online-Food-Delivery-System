@@ -11,5 +11,7 @@ public interface OrderService {
 
   List<OrderResponse> getUserOrders(String userId);
 
+  void removeOrder(Long orderId);
+
 
 }
