@@ -12,6 +12,7 @@ import {
   FaYoutube,
   FaSearch,
   FaUser,
+  FaCompass,
   FaShoppingCart,
   FaSignInAlt,
   FaSignOutAlt,
@@ -20,6 +21,7 @@ import {
 } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
 
 const PrivateNavbar = () => {
@@ -28,15 +30,18 @@ const PrivateNavbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
   const profileMenuRef = useRef(null);
   const navigate = useNavigate();
   const { isEmailVerified } = useContext(AppContext);
+  const { cartCount } = useContext(AppContext);
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(e.target)
+      ) {
         setIsProfileMenuOpen(false);
       }
     };
@@ -45,10 +50,10 @@ const PrivateNavbar = () => {
   }, []);
 
   const navLinks = [
-    { name: "Home", icon: FaHome },
-    { name: "About", icon: FaInfoCircle },
-    { name: "Services", icon: FaConciergeBell },
-    { name: "Contact", icon: FaPhone },
+    { name: "Home", path: "/user-home", icon: FaHome },
+    { name: "Explore", path: "/explore", icon: FaCompass },
+    { name: "Services", path: "/services", icon: FaConciergeBell },
+    { name: "Contact", path: "/contact", icon: FaPhone },
   ];
 
   return (
@@ -91,9 +96,7 @@ const PrivateNavbar = () => {
                 <span className="text-white text-xl"></span>
               </div>
               <div>
-                <h1 className="text-2xl font-black text-orange-500">
-                  
-                </h1>
+                <h1 className="text-2xl font-black text-orange-500"></h1>
                 <p className="text-xs text-orange-300">Fast Delivery</p>
               </div>
             </div>
@@ -104,14 +107,14 @@ const PrivateNavbar = () => {
                 const Icon = link.icon;
 
                 return (
-                  <a
+                  <NavLink
                     key={index}
-                    href="#"
+                    to={link.path}
                     className="flex items-center gap-2 text-gray-300 hover:text-orange-400 transition"
                   >
                     <Icon />
                     {link.name}
-                  </a>
+                  </NavLink>
                 );
               })}
             </div>
@@ -127,10 +130,13 @@ const PrivateNavbar = () => {
               </button>
 
               {/* CART ICON */}
-              <button className="relative text-gray-300 hover:text-orange-400 transition duration-300 p-2 hover:bg-orange-500/10 rounded-lg group">
+              <button
+                onClick={() => navigate("/cart")}
+                className="relative text-gray-300 hover:text-orange-400 transition duration-300 p-2 hover:bg-orange-500/10 rounded-lg group"
+              >
                 <FaShoppingCart className="text-lg group-hover:scale-125 transition-transform" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-linear-to-r from-orange-500 to-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-lg shadow-orange-500/50 animate-pulse">
+                  <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
                     {cartCount}
                   </span>
                 )}
