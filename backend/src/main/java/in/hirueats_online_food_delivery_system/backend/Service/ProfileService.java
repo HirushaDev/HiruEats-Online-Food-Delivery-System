@@ -1,7 +1,11 @@
 package in.hirueats_online_food_delivery_system.backend.Service;
 
+import in.hirueats_online_food_delivery_system.backend.Entity.UserEntity;
 import in.hirueats_online_food_delivery_system.backend.IO.ProfileRequest;
 import in.hirueats_online_food_delivery_system.backend.IO.ProfileResponse;
+
+
+import java.util.List;
 
 public interface ProfileService {
 
@@ -18,5 +22,15 @@ public interface ProfileService {
       void sendOtp(String email);
 
       void verifyOtp(String email, String otp);
+
+      void makeAdmin(String userId);
+
+       List<UserEntity> getAllUsers();
+
+       in.hirueats_online_food_delivery_system.backend.IO.UserManagementResponse toggleUserStatus(Long id);
+
+       void deleteUser(Long id);
+
+       List<in.hirueats_online_food_delivery_system.backend.IO.UserManagementResponse> getAllUsersForAdmin();
 
 }
