@@ -7,6 +7,9 @@ import in.hirueats_online_food_delivery_system.backend.Repostory.OrderRepostory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
@@ -26,6 +29,13 @@ public class OrderServiceImpl implements OrderService {
         // TODO: integrate payment gateway here to process the payment and update the order status accordingly
 
         return convertToResponse(newOrder);
+    }
+
+    @Override
+    public List<OrderResponse> getUserOrders(String userId) {
+        List<OrderEntity>  list = orderRepostory.findByUserId(userId);
+        return list.stream().map(entity -> convertToResponse(entity)).collect(Collectors.toList());
+
     }
 
     private OrderEntity convertToEntity(OrderRequest request) {
@@ -48,6 +58,7 @@ public class OrderServiceImpl implements OrderService {
                    .userAddress(newOrder.getUserAddress())
                    .phoneNumber(newOrder.getPhoneNumber())
                    .paymentStatus(newOrder.getPaymentStatus())
+                   .orderItemList(newOrder.getOrderItemList())
                    .orderStatus(newOrder.getOrderStatus())
                    .build();
     }
