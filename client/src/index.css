@@ -2,7 +2,7 @@
 
 /* Scrollbar Width */
 ::-webkit-scrollbar {
-  width: 2px;
+  width: 10px;
 }
 
 /* Scrollbar Track */
@@ -19,4 +19,20 @@
 /* Hover Effect */
 ::-webkit-scrollbar-thumb:hover {
   background: #ea580c;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.explore-menu-hr {
+  margin: 10px 0;
+   height: 1px;
+   background-color: #e2e2e2;
+   border: none;
 }

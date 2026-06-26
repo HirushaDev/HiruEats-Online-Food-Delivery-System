@@ -8,6 +8,12 @@ import Mango_Tango_Smoothie from './Mango_Tango_Smoothie.jpg';
 import appMockup from './AppMockUp.jpg';
 import HowToWorks from './HowToWorks.jpg';
 import Login_Background from './Login_Back.jpg';
+import pizzaHome from './PizzaH.jpg';
+import JuiceH from './JuiceH.jpg';
+import kootu from './kottuE.jpg';
+import rice from './riseE.jpg';
+import patis from './patisE.jpg';
+import noodles from './NoodlesE.jpg';
 
 
 export const assets = {
@@ -21,4 +27,10 @@ export const assets = {
   appMockup,
   HowToWorks,
   Login_Background,
+  pizzaHome,
+  JuiceH,
+  kootu,
+  rice,
+  patis,
+  noodles
 };
