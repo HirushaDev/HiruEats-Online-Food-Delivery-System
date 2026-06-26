@@ -18,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,8 +41,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/send-reset-otp", "/reset-password", "/logout")
-                        .permitAll().anyRequest().authenticated())
+                        .requestMatchers("/login", "/register", "/send-reset-otp", "/reset-password", "/logout", "/admin/login")
+                        .permitAll()
+                                .requestMatchers("/Images/**").permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/hirueats/foods", "/hirueats/foods/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/hirueats/juices", "/hirueats/juices/**").permitAll()
+                                .requestMatchers("/hirueats/foods/upload").hasRole("ADMIN")
+                                .requestMatchers("/hirueats/juices/upload").hasRole("ADMIN")
+                                .requestMatchers("/api/foods/**").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/api/juice/**").hasAnyRole("ADMIN", "USER")
+                        .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
@@ -61,7 +71,7 @@ public class SecurityConfig {
 
     private CorsConfigurationSource corsConfigurationsSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        config.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5174"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         config.setAllowCredentials(true);
