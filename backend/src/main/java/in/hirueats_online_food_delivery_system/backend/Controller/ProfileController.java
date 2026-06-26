@@ -1,5 +1,6 @@
 package in.hirueats_online_food_delivery_system.backend.Controller;
 
+import in.hirueats_online_food_delivery_system.backend.Entity.UserEntity;
 import in.hirueats_online_food_delivery_system.backend.IO.ProfileRequest;
 import in.hirueats_online_food_delivery_system.backend.IO.ProfileResponse;
 import in.hirueats_online_food_delivery_system.backend.Service.EmailService;
@@ -7,8 +8,11 @@ import in.hirueats_online_food_delivery_system.backend.Service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,7 +40,20 @@ public class ProfileController {
         return profileService.getProfile(email);
     }
 
+    @PutMapping("/make-admin")
+    public ResponseEntity<?> makeAdmin(@RequestParam String userId) {
+        try {
+            profileService.makeAdmin(userId);
+            return ResponseEntity.ok(java.util.Map.of("message", "User promoted to ADMIN"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(java.util.Map.of("error", true, "message", e.getMessage()));
+        }
+    }
 
-
+    @GetMapping("/users")
+    public List<UserEntity> getAllUsers() {
+        return profileService.getAllUsers();
+    }
 
 }
