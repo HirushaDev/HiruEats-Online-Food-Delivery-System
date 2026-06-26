@@ -23,4 +23,6 @@ public class OrderEntity {
       private double amount;
       private String paymentStatus;
       private String orderStatus;
+      private String razorpayOrderId;
+      private String razorpaySignature;
 }
