@@ -26,14 +26,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     private static final List<String> PUBLIC_URL = List.of("/login", "/register", "/send-reset-otp", "/reset-password",
-            "/logout");
+            "/logout", "/admin/login");
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String path = request.getServletPath();
 
-        if (PUBLIC_URL.contains(path)) {
+        if (PUBLIC_URL.contains(path) || path.startsWith("/Images/")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -60,17 +60,31 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         // 3. validate the token and set the authentication in the context
         if (jwt != null) {
-            email = jwtUtil.extractEmail(jwt);
-            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                appUserDetailsService.loadUserByUsername(email);
-                UserDetails userDetails = appUserDetailsService.loadUserByUsername(email);
-                if (jwtUtil.validToken(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                    usernamePasswordAuthenticationToken
-                            .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            try {
+                email = jwtUtil.extractEmail(jwt);
+                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = appUserDetailsService.loadUserByUsername(email);
+                    if (jwtUtil.validToken(jwt, userDetails)) {
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        usernamePasswordAuthenticationToken
+                                .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    }
                 }
+            } catch (io.jsonwebtoken.ExpiredJwtException e) {
+                // Token expired — clear the cookie so the client is prompted to re-login
+                jakarta.servlet.http.Cookie expiredCookie = new jakarta.servlet.http.Cookie("jwt", null);
+                expiredCookie.setPath("/");
+                expiredCookie.setMaxAge(0);
+                expiredCookie.setHttpOnly(true);
+                response.addCookie(expiredCookie);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{\"error\":true,\"message\":\"JWT token has expired. Please log in again.\"}");
+                return;
+            } catch (Exception e) {
+                // Invalid token — skip authentication, let Spring Security return 401/403
             }
         }
         filterChain.doFilter(request, response);
