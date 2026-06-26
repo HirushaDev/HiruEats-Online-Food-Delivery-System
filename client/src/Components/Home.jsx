@@ -10,14 +10,13 @@ import SriLankaMap from '../Pages/SriLankaMap';
 const Home = () => {
   return (
     <div>
-      <PublicNavbar />  
+     
       <HeroSection />
       <ShowcaseSection />
       <HowItWorks />
       <SriLankaMap />
       <AppDownload/>
-      <Footer />
-    
+     
         
     </div>
   );
