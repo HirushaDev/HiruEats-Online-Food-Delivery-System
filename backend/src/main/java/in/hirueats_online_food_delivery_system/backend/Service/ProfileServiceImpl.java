@@ -1,8 +1,10 @@
 package in.hirueats_online_food_delivery_system.backend.Service;
 
+import in.hirueats_online_food_delivery_system.backend.Entity.Role;
 import in.hirueats_online_food_delivery_system.backend.Entity.UserEntity;
 import in.hirueats_online_food_delivery_system.backend.IO.ProfileRequest;
 import in.hirueats_online_food_delivery_system.backend.IO.ProfileResponse;
+import in.hirueats_online_food_delivery_system.backend.IO.UserManagementResponse;
 import in.hirueats_online_food_delivery_system.backend.Repostory.UserRepostory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -58,6 +61,8 @@ public class ProfileServiceImpl implements ProfileService {
                 .name(request.getName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .isAccountVerified(false)
+                .isAccountDisabled(false)
+                .role(Role.USER)
                 .resetOtpExpiredAt(0L)
                 .verifyOtp(null)
                 .verifyOtpExpireAt(0L)
@@ -157,6 +162,55 @@ public class ProfileServiceImpl implements ProfileService {
         existingUser.setVerifyOtp(null);
         existingUser.setVerifyOtpExpireAt(0L);
         userRepostory.save(existingUser);
+    }
+
+    @Override
+    public void makeAdmin(String userId) {
+        UserEntity user = userRepostory.findByUserId(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with userId: " + userId));
+        user.setRole(Role.ADMIN);
+        userRepostory.save(user);
+    }
+
+    @Override
+    public List<UserEntity> getAllUsers() {
+        return userRepostory.findAll();
+    }
+
+    @Override
+    public List<UserManagementResponse> getAllUsersForAdmin() {
+        return userRepostory.findAll().stream()
+                .map(this::convertToUserManagementResponse)
+                .toList();
+    }
+
+    @Override
+    public UserManagementResponse toggleUserStatus(Long id) {
+        UserEntity user = userRepostory.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
+        user.setIsAccountDisabled(user.getIsAccountDisabled() == null || !user.getIsAccountDisabled());
+        userRepostory.save(user);
+        return convertToUserManagementResponse(user);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        UserEntity user = userRepostory.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
+        userRepostory.delete(user);
+    }
+
+    private UserManagementResponse convertToUserManagementResponse(UserEntity user) {
+        return UserManagementResponse.builder()
+                .id(user.getId())
+                .userId(user.getUserId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole() != null ? user.getRole().name() : null)
+                .isAccountVerified(user.getIsAccountVerified())
+                .isAccountDisabled(user.getIsAccountDisabled() != null ? user.getIsAccountDisabled() : false)
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 
 
