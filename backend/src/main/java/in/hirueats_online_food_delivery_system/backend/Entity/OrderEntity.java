@@ -1,37 +1,44 @@
 package in.hirueats_online_food_delivery_system.backend.Entity;
 
-
-import in.hirueats_online_food_delivery_system.backend.IO.OrderItem;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+
 @Entity
-@Data
-@Builder
 @Table(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@Builder
 public class OrderEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-      private Long Id;
+    private Long id;
 
-      private String userId;
-      private String userAddress;
-      private String phoneNumber;
-      private String email;
-      private double amount;
-      private String paymentStatus;
-      private String orderStatus;
+    private String userId;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
-      private List<OrderItem> orderItemList;
+    private String paymentMethod;
 
+    private double subtotal;
 
+    private double deliveryFee;
+
+    private double total;
+
+    private String status;
+
+    private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItemEntity> orderItems;
+
+    @PrePersist
+    public void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
 }
