@@ -23,6 +23,8 @@ import { FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import { AppContext } from "../Context/AppContext";
+import { AppConstants } from "../Util/constants";
+import axios from "axios";
 
 const PrivateNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -34,6 +36,7 @@ const PrivateNavbar = () => {
   const navigate = useNavigate();
   const { isEmailVerified } = useContext(AppContext);
   const { cartCount } = useContext(AppContext);
+   const BACKEND_URL = AppConstants.BACKEND_API_BASE_URL;
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -55,6 +58,21 @@ const PrivateNavbar = () => {
     { name: "Services", path: "/services", icon: FaConciergeBell },
     { name: "Contact", path: "/contact", icon: FaPhone },
   ];
+
+  const handleLogout = async () => {
+  try {
+    await axios.post(`${BACKEND_URL}/logout`, {}, {
+      withCredentials: true
+    });
+
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("user");
+
+    window.location.href = "/login";
+  } catch (error) {
+    console.log("Logout error:", error);
+  }
+};
 
   return (
     <>
@@ -173,6 +191,13 @@ const PrivateNavbar = () => {
                   </div>
                 )}
               </div>
+              <button
+  onClick={handleLogout}
+  className="flex items-center gap-2 text-gray-300 hover:text-red-500"
+>
+  <FaSignOutAlt />
+  Logout
+</button>
 
               {/* MOBILE MENU BUTTON */}
               <button

@@ -1,7 +1,11 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { useContext } from "react";
+
+import { AppContext } from "./Context/AppContext";
 
 import PrivateNavbar from "./Components/PrivateNavbar";
+import PublicNavbar from "./Components/PublicNavbar";
 import Footer from "./Components/Footer";
 
 import Home from "./Components/Home";
@@ -16,9 +20,12 @@ import FoodDetails from "./Pages/FoodDetails";
 import JuiceDetails from "./Pages/JuiceDetails";
 import Cart from "./Pages/Cart";
 import PlaceOrder from "./Pages/PlaceOrder";
+import Payment from "./Pages/Payment";
 
 const App = () => {
   const location = useLocation();
+
+  const { isLoggedIn } = useContext(AppContext); // ✅ INSIDE component
 
   const hideLayout = [
     "/login",
@@ -30,7 +37,10 @@ const App = () => {
     <>
       <ToastContainer position="top-right" autoClose={2500} />
 
-      {!hideLayout && <PrivateNavbar />}
+      {/* NAVBAR SWITCH */}
+      {!hideLayout && (
+        isLoggedIn ? <PrivateNavbar /> : <PublicNavbar />
+      )}
 
       <Routes>
         <Route path="/" element={<Home />} />
@@ -45,7 +55,7 @@ const App = () => {
         <Route path="/juice/:id" element={<JuiceDetails />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/place-order" element={<PlaceOrder />} />
-
+        <Route path="/payment" element={<Payment />} />
       </Routes>
 
       {!hideLayout && <Footer />}

@@ -18,6 +18,7 @@ import {
   FaCog,
 } from "react-icons/fa";
 
+
 const PublicNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -25,6 +26,7 @@ const PublicNavbar = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+ 
 
   const navLinks = [
     { name: "Home", icon: FaHome },
@@ -32,6 +34,7 @@ const PublicNavbar = () => {
     { name: "Services", icon: FaConciergeBell },
     { name: "Contact", icon: FaPhone },
   ];
+
 
   return (
     <>
@@ -121,6 +124,7 @@ const PublicNavbar = () => {
               </button>
             </div>
 
+
             {/* SEARCH BAR - VISIBLE WHEN OPEN */}
             {isSearchOpen && (
               <div className="absolute top-20 left-0 right-0 bg-gray-900 border-b border-orange-500/30 px-6 py-4 animate-slideDown">
@@ -184,6 +188,7 @@ const PublicNavbar = () => {
               })}
             </div>
           </div>
+           
         )}
       </nav>
 
