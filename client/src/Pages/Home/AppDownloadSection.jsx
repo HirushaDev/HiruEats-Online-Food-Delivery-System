@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaGooglePlay, FaApple } from "react-icons/fa";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 
 gsap.registerPlugin(ScrollTrigger);
 

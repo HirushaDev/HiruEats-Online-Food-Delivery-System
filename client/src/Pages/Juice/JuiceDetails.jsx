@@ -1,33 +1,31 @@
-import { useEffect, useState ,useContext} from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState,useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AppConstants } from "../Util/constants";
-import { FiArrowLeft } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
-import { AppContext } from "../Context/AppContext";
+import { FiArrowLeft, FiShoppingCart } from "react-icons/fi";
+import { AppConstants } from "../../Util/constants";
+import { AppContext } from "../../Context/AppContext";
 
-
-const FoodDetails = () => {
+const JuiceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [food, setFood] = useState(null);
+  const [juice, setJuice] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { addToCart } = useContext(AppContext);
+   const { addToCart } = useContext(AppContext);
 
   const BACKEND_URL = AppConstants.BACKEND_API_BASE_URL;
 
   useEffect(() => {
-    fetchFood();
+    fetchJuice();
   }, [id]);
 
-  const fetchFood = async () => {
+  const fetchJuice = async () => {
     try {
       const res = await axios.get(
-        `${BACKEND_URL}/hirueats/foods/${id}`
+        `${BACKEND_URL}/hirueats/juices/${id}`
       );
 
-      setFood(res.data);
+      setJuice(res.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -46,20 +44,20 @@ const FoodDetails = () => {
   };
 
   const getFinalPrice = () => {
-    if (!food) return 0;
+    if (!juice) return 0;
 
-    if (food.discount > 0) {
+    if (juice.discount > 0) {
       return (
-        food.price -
-        (food.price * food.discount) / 100
+        juice.price -
+        (juice.price * juice.discount) / 100
       ).toFixed(2);
     }
 
-    return food.price.toFixed(2);
+    return juice.price.toFixed(2);
   };
 
-  const addToCartV = () => {
-       addToCart(`food-${food.id}`);
+  const addJCartV = () => {
+       addToCart(`juice-${juice.id}`);
        navigate('/cart');
   }
 
@@ -71,93 +69,100 @@ const FoodDetails = () => {
     );
   }
 
-  if (!food) {
+  if (!juice) {
     return (
       <div className="text-center py-20 text-red-500">
-        Food not found
+        Juice not found
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 ">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl border-1 border-black shadow-lg overflow-hidden">
+    <div className="min-h-screen bg-gray-50 py-10 px-4">
+
+      <div className="max-w-5xl mx-auto mb-4">
+        
+      </div>
+
+      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg overflow-hidden border border-black">
 
         <div className="grid md:grid-cols-2 gap-8">
 
           {/* IMAGE */}
           <div className="p-6">
             <img
-              src={getImageUrl(food.imageUrl)}
-              alt={food.foodName}
+              src={getImageUrl(juice.imageUrl)}
+              alt={juice.juiceName}
               className="w-full h-[400px] object-cover rounded-xl"
             />
           </div>
 
           {/* DETAILS */}
           <div className="p-6 flex flex-col justify-center">
+
             <h1 className="text-4xl font-bold text-gray-800">
-              {food.foodName}
+              {juice.juiceName}
             </h1>
 
             <p className="mt-4 text-gray-600">
-              {food.description}
+              {juice.description}
             </p>
 
             <div className="flex gap-2 mt-4">
-              <span className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm">
-                {food.category}
+              <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm">
+                {juice.category}
               </span>
 
               <span
                 className={`px-3 py-1 rounded-full text-sm ${
-                  food.available
+                  juice.available
                     ? "bg-green-100 text-green-600"
                     : "bg-red-100 text-red-600"
                 }`}
               >
-                {food.available
+                {juice.available
                   ? "Available"
                   : "Not Available"}
               </span>
             </div>
 
-            {/* PRICE */}
             <div className="mt-6">
               <h2 className="text-3xl font-bold text-orange-500">
                 Rs. {getFinalPrice()}
               </h2>
 
-              {food.discount > 0 && (
+              {juice.discount > 0 && (
                 <>
                   <p className="text-gray-400 line-through">
-                    Rs. {food.price.toFixed(2)}
+                    Rs. {juice.price.toFixed(2)}
                   </p>
 
                   <p className="text-green-600 font-semibold">
-                    {food.discount}% OFF
+                    {juice.discount}% OFF
                   </p>
                 </>
               )}
             </div>
 
-            {/* BUTTON */}
-            <button className="mt-8 w-[150px] bg-orange-500  text-white py-3 rounded-xl hover:bg-orange-600 transition" onClick={addToCartV}>
+            <button className="mt-8 flex items-center justify-center gap-2 bg-orange-500 text-white py-3 rounded-xl hover:bg-orange-600 transition" onClick={addJCartV}>
+              <FiShoppingCart />
               Add To Cart
             </button>
+
           </div>
 
         </div>
+
       </div>
       <button
-  onClick={() => navigate("/user-home")}
-  className="flex items-center gap-2 px-4 py-2 bg-transparent border-2 border-black text-black rounded-lg hover:bg-orange-400 transition cursor-pointer "
->
-  <FiArrowLeft />
-  Back To Home
-</button>
+          onClick={() => navigate("/user-home")}
+          className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
+        >
+          <FiArrowLeft />
+          Back To Home
+        </button>
     </div>
   );
 };
 
-export default FoodDetails;
+export default JuiceDetails;

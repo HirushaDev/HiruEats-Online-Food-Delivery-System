@@ -1,31 +1,44 @@
-import React, { useState, useRef, useContext } from "react";
-import { assets } from "../assets/assets";
+import React, { useState, useRef } from "react";
+import { assets } from "../../assets/assets";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEnvelope, FaKey } from "react-icons/fa";
-import { AppConstants } from "../Util/constants";
+import { FaEnvelope, FaLock, FaKey } from "react-icons/fa";
+import { AppConstants } from "../../Util/constants";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { AppContext } from "../Context/AppContext";
 
-const VerifyEmail = () => {
+const ForgotPassword = () => {
   const navigate = useNavigate();
-  const { setIsEmailVerified } = useContext(AppContext);
-  const [step, setStep] = useState(1); // 1=send OTP, 2=enter OTP
+  const [step, setStep] = useState(1); // 1=email, 2=OTP, 3=new password
+  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const otpRefs = useRef([]);
 
-  // ── Step 1: Send Verification OTP ────────────────────────────────────────────
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // ── Step 1: Send OTP ────────────────────────────────────────────────────────
   const handleSendOtp = async (e) => {
     e.preventDefault();
+
+    if (!email.trim()) {
+      toast.error("Please enter your email address");
+      return;
+    }
+    if (!emailRegex.test(email.trim())) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        `${AppConstants.BACKEND_API_BASE_URL}/send-otp`,
+        `${AppConstants.BACKEND_API_BASE_URL}/send-reset-otp`,
         null,
-        { withCredentials: true }
+        { params: { email: email.trim() } }
       );
-      toast.success(response.data?.message || "Verification OTP sent to your email");
+      toast.success(response.data?.message || "OTP sent to your email");
       setStep(2);
     } catch (error) {
       const message =
@@ -39,8 +52,19 @@ const VerifyEmail = () => {
     }
   };
 
-  // ── Step 2: Verify OTP ───────────────────────────────────────────────────────
-  const handleVerifyOtp = async (e) => {
+  // ── Step 2: Verify OTP (client-side length check, real verify on step 3) ──
+  const handleVerifyOtp = (e) => {
+    e.preventDefault();
+    const otpString = otp.join("");
+    if (otpString.length !== 6) {
+      toast.error("Please enter the full 6-digit OTP");
+      return;
+    }
+    setStep(3);
+  };
+
+  // ── Step 3: Reset Password ───────────────────────────────────────────────────
+  const handleResetPassword = async (e) => {
     e.preventDefault();
     const otpString = otp.join("");
 
@@ -48,40 +72,53 @@ const VerifyEmail = () => {
       toast.error("Please enter the full 6-digit OTP");
       return;
     }
+    if (!newPassword) {
+      toast.error("Please enter a new password");
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        `${AppConstants.BACKEND_API_BASE_URL}/verify-otp`,
-        { otp: otpString },
-        { withCredentials: true }
+        `${AppConstants.BACKEND_API_BASE_URL}/reset-password`,
+        { email: email.trim(), otp: otpString, newPassword }
       );
-      toast.success(response.data?.message || "Email verified successfully!");
-      setIsEmailVerified(true);
+      toast.success(response.data?.message || "Password reset successfully!");
+      setEmail("");
       setOtp(["", "", "", "", "", ""]);
+      setNewPassword("");
+      setConfirmPassword("");
       setStep(1);
-      navigate("/user-home");
+      navigate("/login");
     } catch (error) {
       const message =
         error?.response?.data?.message ||
         error?.response?.data?.error ||
         error?.message ||
-        "Failed to verify OTP";
+        "Failed to reset password";
       toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // ── Resend OTP ────────────────────────────────────────────────────────────────
+  // ── Resend OTP (reuse step 1 handler with toast feedback) ────────────────────
   const handleResendOtp = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        `${AppConstants.BACKEND_API_BASE_URL}/send-otp`,
+        `${AppConstants.BACKEND_API_BASE_URL}/send-reset-otp`,
         null,
-        { withCredentials: true }
+        { params: { email: email.trim() } }
       );
       toast.success(response.data?.message || "OTP resent to your email");
     } catch (error) {
@@ -96,7 +133,7 @@ const VerifyEmail = () => {
     }
   };
 
-  // ── OTP digit input handler ───────────────────────────────────────────────────
+  // OTP digit input handler
   const handleOtpChange = (index, value) => {
     if (!/^\d*$/.test(value)) return;
     const newOtp = [...otp];
@@ -112,13 +149,15 @@ const VerifyEmail = () => {
   };
 
   const stepTitles = {
-    1: "Verify Your Email",
-    2: "Enter Verification OTP",
+    1: "Reset Your Password",
+    2: "Enter OTP",
+    3: "Create New Password",
   };
 
   const stepDescriptions = {
-    1: "Click the button below and we'll send a 6-digit OTP to your registered email to verify your account.",
-    2: "We've sent a 6-digit OTP to your email. Enter it below to verify your account.",
+    1: "Enter your registered email address and we'll send you an OTP to reset your password.",
+    2: `We've sent a 6-digit OTP to ${email}. Enter it below to continue.`,
+    3: "Enter your new password below. Make sure it's at least 6 characters.",
   };
 
   return (
@@ -132,7 +171,7 @@ const VerifyEmail = () => {
       {/* Logo */}
       <div className="absolute top-5 left-8 flex items-center z-10">
         <Link
-          to="/user-home"
+          to="/"
           className="flex items-center gap-2 text-white font-bold text-2xl"
         >
           <img
@@ -165,12 +204,23 @@ const VerifyEmail = () => {
             {stepDescriptions[step]}
           </p>
 
-          {/* Step 1: Send OTP */}
+          {/* Step 1: Email */}
           {step === 1 && (
             <>
-              <div className="flex justify-center mb-4">
-                <div className="bg-orange-500/10 border border-orange-500/30 rounded-full p-6">
-                  <FaEnvelope className="text-orange-400 text-4xl" />
+              <div className="mb-2">
+                <label className="block text-white mb-2 relative left-4 font-medium">
+                  Email Id
+                </label>
+                <div className="relative left-6 w-[85%] mx-auto">
+                  <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="email"
+                    placeholder="Enter your email address"
+                    className="w-full block h-12 px-5 pl-10 py-4 rounded-lg border border-gray-300 text-white placeholder:text-gray-500 placeholder:text-sm placeholder:italic focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    onChange={(e) => setEmail(e.target.value)}
+                    value={email}
+                    required
+                  />
                 </div>
               </div>
               <button
@@ -226,16 +276,63 @@ const VerifyEmail = () => {
               </p>
             </>
           )}
+
+          {/* Step 3: New Password */}
+          {step === 3 && (
+            <>
+              <div className="mb-2">
+                <label className="block text-white mb-2 relative left-4 font-medium">
+                  New Password
+                </label>
+                <div className="relative left-6 w-[85%] mx-auto">
+                  <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="password"
+                    placeholder="Enter new password"
+                    className="w-full block h-12 px-5 pl-10 py-4 rounded-lg border border-gray-300 text-white placeholder:text-gray-500 placeholder:text-sm placeholder:italic focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="mb-2">
+                <label className="block text-white mb-2 relative left-4 font-medium">
+                  Confirm Password
+                </label>
+                <div className="relative left-6 w-[85%] mx-auto">
+                  <FaLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="password"
+                    placeholder="Confirm new password"
+                    className="w-full block h-12 px-5 pl-10 py-4 rounded-lg border border-gray-300 text-white placeholder:text-gray-500 placeholder:text-sm placeholder:italic focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                onClick={handleResetPassword}
+                disabled={isSubmitting}
+                className="w-[40%] mx-auto block h-10 mt-4 mb-4 bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer text-center disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isSubmitting ? "Resetting..." : "Reset Password"}
+              </button>
+            </>
+          )}
         </form>
 
-        {/* Back to Home */}
+        {/* Back to Login */}
         <div className="text-center mt-8">
           <p className="text-white">
+            Remember your password?{" "}
             <Link
-              to="/user-home"
+              to="/login"
               className="underline cursor-pointer text-orange-600"
             >
-              Back to Home
+              Login here
             </Link>
           </p>
         </div>
@@ -244,4 +341,4 @@ const VerifyEmail = () => {
   );
 };
 
-export default VerifyEmail;
+export default ForgotPassword;

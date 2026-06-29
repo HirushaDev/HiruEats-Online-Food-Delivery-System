@@ -9,23 +9,22 @@ import PublicNavbar from "./Components/PublicNavbar";
 import Footer from "./Components/Footer";
 
 import Home from "./Components/Home";
-import Login from "./Pages/Login";
-import ForgotPassword from "./Pages/ForgotPassword";
-import UserHome from "./Pages/UserHome";
-import VerifyEmail from "./Pages/VerifyEmail";
-import Explore from "./Pages/Explore";
-import Services from "./Pages/Services";
-import Contact from "./Pages/Contact";
-import FoodDetails from "./Pages/FoodDetails";
-import JuiceDetails from "./Pages/JuiceDetails";
-import Cart from "./Pages/Cart";
-import PlaceOrder from "./Pages/PlaceOrder";
-import Payment from "./Pages/Payment";
+import Login from "../src/Pages/Login/Login";
+import ForgotPassword from "../src/Pages/ForgotPassword/ForgotPassword";
+import UserHome from "./Pages/User-Home/UserHome";
+import VerifyEmail from "../src/Pages/VerifyEmail/VerifyEmail";
+import Explore from "../src/Pages/User-Home/explore";
+import Services from "../src/Pages/Services/Services";
+import Contact from "./Pages/User-Home/Contact";
+import FoodDetails from "../src/Pages/Food/FoodDetails";
+import JuiceDetails from "./Pages/Juice/JuiceDetails";
+import Cart from "../src/Pages/Cart/Cart";
+import Payment from "../src/Pages/Payment/Payment";
 
 const App = () => {
   const location = useLocation();
 
-  const { isLoggedIn } = useContext(AppContext); // ✅ INSIDE component
+  const { isLoggedIn } = useContext(AppContext); 
 
   const hideLayout = [
     "/login",
@@ -54,7 +53,6 @@ const App = () => {
         <Route path="/food/:id" element={<FoodDetails />} />
         <Route path="/juice/:id" element={<JuiceDetails />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/place-order" element={<PlaceOrder />} />
         <Route path="/payment" element={<Payment />} />
       </Routes>
 

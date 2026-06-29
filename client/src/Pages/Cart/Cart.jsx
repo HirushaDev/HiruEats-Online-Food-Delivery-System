@@ -3,8 +3,8 @@ import { FiMinus, FiPlus, FiTrash2, FiArrowLeft, FiShoppingCart } from "react-ic
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { AppContext } from "../Context/AppContext";
-import { AppConstants } from "../Util/constants";
+import { AppContext } from "../../Context/AppContext";
+import { AppConstants } from "../../Util/constants";
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -99,7 +99,7 @@ const Cart = () => {
  const handleCheckout = () => {
   toast.success("Proceeding to checkout...");
 
-  navigate("/place-order", {
+  navigate("/payment", {
     state: {
       cartItems,
       subtotal,

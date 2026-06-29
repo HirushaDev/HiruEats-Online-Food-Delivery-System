@@ -1,5 +1,5 @@
 import React from "react";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 import { FaStar,FaCheck ,FaVideo} from "react-icons/fa";
 import { MdLocalDrink } from "react-icons/md";
 

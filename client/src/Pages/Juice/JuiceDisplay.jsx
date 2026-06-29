@@ -9,11 +9,11 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { AppContext } from "../Context/AppContext";
-import { AppConstants } from "../Util/constants";
+import { AppContext } from "../../Context/AppContext";
+import { AppConstants } from "../../Util/constants";
 
-const FoodDisplay = () => {
-  const [foods, setFoods] = useState([]);
+const JuiceDisplay = () => {
+  const [juices, setJuices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -31,19 +31,19 @@ const FoodDisplay = () => {
   const BACKEND_URL = AppConstants.BACKEND_API_BASE_URL;
 
   useEffect(() => {
-    fetchFoods();
+    fetchJuices();
   }, []);
 
-  const fetchFoods = async () => {
+  const fetchJuices = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const res = await axios.get(`${BACKEND_URL}/hirueats/foods`);
-      setFoods(res.data);
+      const res = await axios.get(`${BACKEND_URL}/hirueats/juices`);
+      setJuices(res.data);
     } catch (err) {
-      console.error("Error fetching foods:", err);
-      setError("Failed to load food items. Please try again.");
+      console.error("Error fetching juices:", err);
+      setError("Failed to load juice items. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -57,41 +57,41 @@ const FoodDisplay = () => {
     return `${BACKEND_URL}${imageUrl}`;
   };
 
-  const handleAddToCart = (food) => {
-    addToCart(`food-${food.id}`);
-    toast.success(`${food.foodName} added to cart!`);
+  const handleAddToCart = (juice) => {
+    addToCart(`juice-${juice.id}`);
+    toast.success(`${juice.juiceName} added to cart!`);
   };
 
-  const handleViewDetails = (food) => {
-    toast.info(`Viewing details for ${food.foodName}`);
-    navigate(`/food/${food.id}`);
+  const handleViewDetails = (juice) => {
+    toast.info(`Viewing details for ${juice.juiceName}`);
+    navigate(`/juice/${juice.id}`);
   };
-  const handlePlusFood = (food) => {
-    toast.info(`Adding ${food.foodName} to cart`);
-    addToCart(`food-${food.id}`);
+  const handlePlusJuice = (juice) => {
+    toast.info(`Adding ${juice.juiceName} to cart`);
+    addToCart(`juice-${juice.id}`);
   };
 
-  const handleMinFood = (food) => {
-    toast.info(`Removing ${food.foodName} from cart`);
-    removeFromCart(`food-${food.id}`);
+  const handleMinJuice = (juice) => {
+    toast.info(`Removing ${juice.juiceName} from cart`);
+    removeFromCart(`juice-${juice.id}`);
   };
-  const getFinalPrice = (food) => {
-    if (food.discount > 0) {
-      return (food.price - (food.price * food.discount) / 100).toFixed(2);
+  const getFinalPrice = (juice) => {
+    if (juice.discount > 0) {
+      return (juice.price - (juice.price * juice.discount) / 100).toFixed(2);
     }
-    return food.price.toFixed(2);
+    return juice.price.toFixed(2);
   };
 
   // GET CATEGORIES FROM DATABASE
   const categories = [
     "All",
-    ...new Set(foods.map((food) => food.category).filter(Boolean)),
+    ...new Set(juices.map((juice) => juice.category).filter(Boolean)),
   ];
 
   // FILTER & SORT
-  const filteredFoods = foods
-    .filter((food) =>
-      selectedCategory === "All" ? true : food.category === selectedCategory,
+  const filteredJuices = juices
+    .filter((juice) =>
+      selectedCategory === "All" ? true : juice.category === selectedCategory,
     )
     .sort((a, b) => {
       if (sortPrice === "low-high") {
@@ -112,10 +112,10 @@ const FoodDisplay = () => {
       <div className="max-w-7xl mx-auto">
         {/* HEADER */}
         <div className="text-center mb-10">
-          <h2 className="text-4xl font-bold">Explore Delicious Foods</h2>
+          <h2 className="text-4xl font-bold">Explore Delicious Juices</h2>
 
           <p className="text-gray-500 mt-2">
-            Discover tasty meals, fresh items and special discounts
+            Discover tasty juices, fresh items and special discounts
           </p>
         </div>
 
@@ -164,22 +164,22 @@ const FoodDisplay = () => {
         {/* LOADING */}
         {loading ? (
           <div className="text-center py-10">Loading...</div>
-        ) : filteredFoods.length === 0 ? (
-          <div className="text-center py-20 text-gray-500">No foods found</div>
+        ) : filteredJuices.length === 0 ? (
+          <div className="text-center py-20 text-gray-500">No juices found</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredFoods.map((food) => (
+            {filteredJuices.map((juice) => (
               <div
-                key={food.id}
+                key={juice.id}
                 className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 p-4"
               >
                 {/* IMAGE */}
                 <div className="relative h-40 bg-gray-100 mb-3 rounded-lg overflow-hidden">
-                  {getImageUrl(food.imageUrl) ? (
+                  {getImageUrl(juice.imageUrl) ? (
                     <img
-                      src={getImageUrl(food.imageUrl)}
+                      src={getImageUrl(juice.imageUrl)}
                       className="w-full h-full object-cover"
-                      alt={food.foodName}
+                      alt={juice.juiceName}
                     />
                   ) : (
                     <div className="flex items-center justify-center h-full text-gray-400">
@@ -188,31 +188,31 @@ const FoodDisplay = () => {
                   )}
 
                   {/* DISCOUNT BADGE */}
-                  {food.discount > 0 && (
+                  {juice.discount > 0 && (
                     <span className="absolute top-2 right-2 bg-orange-500 text-white text-xs px-2 py-1 rounded-full">
-                      {food.discount}% OFF
+                      {juice.discount}% OFF
                     </span>
                   )}
                 </div>
 
                 {/* NAME */}
-                <h3 className="font-bold text-lg">{food.foodName}</h3>
+                <h3 className="font-bold text-lg">{juice.juiceName}</h3>
 
                 {/* DESCRIPTION */}
                 <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                  {food.description}
+                  {juice.description}
                 </p>
 
                 {/* CATEGORY */}
                 <div className="mt-2 flex flex-wrap gap-1">
-                  {food.foodCategory && (
+                  {juice.juiceCategory && (
                     <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full font-medium">
-                      {food.foodCategory}
+                      {juice.juiceCategory}
                     </span>
                   )}
-                  {food.category && (
+                  {juice.category && (
                     <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
-                      {food.category}
+                      {juice.category}
                     </span>
                   )}
                 </div>
@@ -221,24 +221,24 @@ const FoodDisplay = () => {
                 <div className="flex items-center justify-between mt-3">
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
-                      food.available
+                      juice.available
                         ? "bg-green-100 text-green-600"
                         : "bg-red-100 text-red-600"
                     }`}
                   >
-                    {food.available ? "Available" : "Not Available"}
+                    {juice.available ? "Available" : "Not Available"}
                   </span>
                 </div>
 
                 {/* PRICE */}
                 <div className="mt-3">
                   <p className="text-orange-500 font-bold text-lg">
-                    Rs. {getFinalPrice(food)}
+                    Rs. {getFinalPrice(juice)}
                   </p>
 
-                  {food.discount > 0 && (
+                  {juice.discount > 0 && (
                     <p className="text-gray-400 line-through text-sm">
-                      Rs. {food.price.toFixed(2)}
+                      Rs. {juice.price.toFixed(2)}
                     </p>
                   )}
                 </div>
@@ -248,7 +248,7 @@ const FoodDisplay = () => {
                 {/* ACTIONS */}
                 <div className="flex items-center justify-between">
                   <button
-                    onClick={() => handleAddToCart(food)}
+                    onClick={() => handleAddToCart(juice)}
                     className="flex items-center gap-2 bg-orange-500 text-white px-3 py-2 rounded-lg hover:bg-orange-600 transition"
                   >
                     <FiShoppingCart />
@@ -256,7 +256,7 @@ const FoodDisplay = () => {
 
                   <div className="flex items-center gap-2">
                     <button
-                      onClick={() => handleViewDetails(food)}
+                      onClick={() => handleViewDetails(juice)}
                       className="p-2 border rounded-lg hover:bg-gray-100"
                     >
                       <FiEye />
@@ -265,27 +265,27 @@ const FoodDisplay = () => {
                     <button
                       className="p-2 border rounded-lg hover:bg-gray-100 text-orange-500"
                       onClick={() =>
-                        toast.info(`${food.foodName} added to favourites`)
+                        toast.info(`${juice.juiceName} added to favourites`)
                       }
                     >
                       <FiHeart />
                     </button>
 
-                    {cart[`food-${food.id}`] > 0 && (
+                    {cart[`juice-${juice.id}`] > 0 && (
                       <>
                         <button
-                          onClick={() => handleMinFood(food)}
+                          onClick={() => handleMinJuice(juice)}
                           className="p-2 border rounded-lg hover:bg-red-700 bg-red-500 text-white cursor-pointer"
                         >
                           <FiMinus />
                         </button>
                         <span className="font-semibold text-gray-700 px-2 min-w-[20px] text-center">
-                          {cart[`food-${food.id}`]}
+                          {cart[`juice-${juice.id}`]}
                         </span>
                       </>
                     )}
                     <button
-                      onClick={() => handlePlusFood(food)}
+                      onClick={() => handlePlusJuice(juice)}
                       className="p-2 border rounded-lg hover:bg-green-700 bg-green-500 text-white cursor-pointer"
                     >
                       <FiPlus />
@@ -301,4 +301,4 @@ const FoodDisplay = () => {
   );
 };
 
-export default FoodDisplay;
+export default JuiceDisplay;

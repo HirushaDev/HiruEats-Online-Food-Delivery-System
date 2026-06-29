@@ -5,15 +5,13 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { FaApple, FaFacebook } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 import { Link, useNavigate } from "react-router-dom";
-import { AppContext } from "../Context/AppContext";
+import { AppContext } from "../../Context/AppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { AppConstants } from "../Util/constants";
-
-
-
+import { AppConstants } from "../../Util/constants";
+import { jwtDecode } from "jwt-decode"; // Make sure to install: npm install jwt-decode
 
 // ── Social icons ─────────────────────────────
 const GoogleIcon = () => <FcGoogle className="w-5 h-5 shrink-0" />;
@@ -135,7 +133,7 @@ function LoginForm({ onSwitch }) {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    // ── frontend validation ──
+    // ── FRONTEND VALIDATION ──
     if (!email.trim()) {
       toast.error("Please enter your email");
       return;
@@ -166,21 +164,160 @@ function LoginForm({ onSwitch }) {
         { withCredentials: true }
       );
 
-      const { email: userEmail, token } = response.data;
+      const data = response.data;
+      console.log("=== FULL LOGIN RESPONSE ===");
+      console.log(JSON.stringify(data, null, 2));
 
-      // store auth state
+      // ── SAFE EXTRACTION ──
+      const token = data.token || data.jwt || data.data?.token || data.data?.jwt;
+
+      if (!token) {
+        toast.error("Login failed: No token received");
+        console.error("No token in response:", data);
+        return;
+      }
+
+      // ── EXTRACT USER ID FROM JWT TOKEN ──
+      let userId = null;
+      let userName = "User";
+      let userEmail = email.trim();
+
+      try {
+        // Decode the JWT token to get user information
+        const decodedToken = jwtDecode(token);
+        console.log("Decoded JWT Token:", decodedToken);
+
+        // Try to extract user ID from various possible claim names
+        userId = decodedToken.sub ||           // Subject claim (often email or ID)
+                 decodedToken.userId || 
+                 decodedToken.id || 
+                 decodedToken.user_id ||
+                 decodedToken.uid ||
+                 decodedToken.userId ||
+                 null;
+
+        // Try to extract name if available
+        userName = decodedToken.name || 
+                   decodedToken.username || 
+                   decodedToken.fullName || 
+                   decodedToken.user_name ||
+                   "User";
+
+        // If userId is an email (from sub claim), extract username part
+        if (userId && userId.includes('@')) {
+          // Use the email as userId if it's the only identifier available
+          // This ensures we have a consistent identifier
+          console.log("Token subject contains email, using email as userId");
+          // Keep the email as userId
+        }
+
+        // If userId is still null, try to extract from email in token
+        if (!userId && decodedToken.email) {
+          userId = decodedToken.email;
+          userEmail = decodedToken.email;
+        }
+
+        console.log("Extracted from token - UserId:", userId, "Name:", userName);
+
+      } catch (decodeError) {
+        console.error("Failed to decode JWT token:", decodeError);
+        // Fallback: use email as userId
+        userId = email.trim();
+      }
+
+      // ── FINAL FALLBACK ──
+      if (!userId) {
+        console.warn("No userId found in token, using email as fallback");
+        userId = email.trim();
+      }
+
+      console.log("Final User ID:", userId);
+
+      // ── EXTRACT USER DATA FROM RESPONSE ──
+      let userData = data.user || data.userDTO || data.data?.user || data.data?.userDTO || {};
+      
+      // If userData is empty, try to extract from the data object itself
+      if (Object.keys(userData).length === 0) {
+        if (data.id || data.userId || data.email) {
+          userData = data;
+        }
+      }
+      
+      console.log("User Data extracted:", userData);
+
+      // ── CREATE USER OBJECT ──
+      const user = {
+        id: userId,
+        userId: userId,
+        email: userData.email || userEmail,
+        name: userData.name || userData.username || userData.fullName || userName,
+        role: userData.role || "USER",
+        ...userData
+      };
+
+      console.log("Saving user to localStorage:", user);
+
+      // ── SAVE TO LOCALSTORAGE ──
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // ── VERIFY SAVE ──
+      const savedUser = localStorage.getItem("user");
+      const savedToken = localStorage.getItem("token");
+      console.log("✓ Token saved:", !!savedToken);
+      console.log("✓ User saved:", !!savedUser);
+      
+      if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        console.log("✓ User ID saved:", parsedUser.id || parsedUser.userId);
+        console.log("✓ Full saved user:", parsedUser);
+      }
+
+      // ── CONTEXT UPDATE ──
       setIsLoggedIn(true);
-      setUserData({ email: userEmail, token });
+      setUserData({
+        userId: userId,
+        email: user.email,
+        name: user.name,
+        token: token,
+      });
 
-      toast.success("Signed in successfully!");
-      navigate("/user-home");
+      toast.success(`Welcome ${user.name}!`);
+
+      // ── CHECK FOR REDIRECT ──
+      const redirectPath = sessionStorage.getItem("redirectAfterLogin");
+      if (redirectPath) {
+        sessionStorage.removeItem("redirectAfterLogin");
+        // Check if there's payment data to restore
+        const paymentData = sessionStorage.getItem("paymentData");
+        if (paymentData && redirectPath === "/payment") {
+          // Navigate with the stored payment data
+          try {
+            const parsedData = JSON.parse(paymentData);
+            navigate(redirectPath, { 
+              state: parsedData 
+            });
+          } catch (e) {
+            navigate(redirectPath);
+          }
+        } else {
+          navigate(redirectPath);
+        }
+      } else {
+        navigate("/user-home");
+      }
+
     } catch (error) {
+      console.error("LOGIN ERROR:", error);
+
       const message =
         error?.response?.data?.message ||
         error?.response?.data?.error ||
         error?.message ||
         "Failed to sign in";
+
       toast.error(message);
+
     } finally {
       setIsSubmitting(false);
     }

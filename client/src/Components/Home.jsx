@@ -1,10 +1,10 @@
 import PublicNavbar from '../Components/PublicNavbar';
-import AppDownload from '../Pages/AppDownloadSection';
-import HeroSection from '../Pages/HeroSection';
-import HowItWorks from '../Pages/HowItWorks';
-import ShowcaseSection from '../Pages/ShowcaseSection';
+import AppDownload from '../Pages/Home/AppDownloadSection';
+import HeroSection from '../Pages/Home/HeroSection';
+import HowItWorks from '../Pages/User-Home/HowItWorks';
+import ShowcaseSection from '../Pages/Home/ShowcaseSection';
 import Footer from '../Components/Footer';
-import SriLankaMap from '../Pages/SriLankaMap';
+import SriLankaMap from '../Pages/Home/SriLankaMap';
 
 
 const Home = () => {

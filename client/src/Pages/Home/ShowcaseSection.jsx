@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { assets } from '../assets/assets';
+import { assets } from '../../assets/assets';
 
 // Sample data for the showcase items
 const showcaseItems = [

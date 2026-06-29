@@ -1,9 +1,9 @@
 import React from 'react';
-import PrivateNavbar from '../Components/PrivateNavbar';
-import UserHeader from './UserHeader';
-import Explore from './explore';
-import FoodDisplay from './FoodDisplay';
-import JuiceDisplay from './JuiceDisplay';
+import PrivateNavbar from '../../Components/PrivateNavbar';
+import UserHeader from '../User-Home/UserHeader';
+import Explore from '../User-Home/explore';
+import FoodDisplay from '../Food/FoodDisplay';
+import JuiceDisplay from '../Juice/JuiceDisplay';
 
 const UserHome = () => {
   return (

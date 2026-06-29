@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 
 const categories = [
   { name: "Pizza", img: assets.pizza },

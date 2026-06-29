@@ -4,7 +4,7 @@ import { FiSearch, FiZap, FiSmile } from "react-icons/fi";
 import { MdFastfood } from "react-icons/md";
 import { TbTruckDelivery } from "react-icons/tb";
 import { BsEmojiHeartEyesFill } from "react-icons/bs";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 
 // ── Utility: split text into individual letter spans ──────────────────────────
 function SplitText({ text, className = "", delay = 0 }) {
