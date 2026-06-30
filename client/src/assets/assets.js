@@ -14,6 +14,9 @@ import kootu from './kottuE.jpg';
 import rice from './riseE.jpg';
 import patis from './patisE.jpg';
 import noodles from './NoodlesE.jpg';
+import contact from './contact.jpg';
+import owner from './owner.jpg';
+import IT from './ITCEO.jpg';
 
 
 export const assets = {
@@ -32,5 +35,8 @@ export const assets = {
   kootu,
   rice,
   patis,
-  noodles
+  noodles,
+  contact,
+  owner,
+  IT
 };

@@ -49,7 +49,7 @@ const WhatsAppButton = () => {
                 onMouseLeave={() => setIsHovered(false)}
                 className={`
                     relative group flex items-center justify-center
-                    w-16 h-16 rounded-full
+                    w-10 h-10 rounded-full
                     bg-gradient-to-br from-green-400 to-emerald-600
                     shadow-2xl shadow-green-500/30
                     border border-white/20
@@ -77,7 +77,7 @@ const WhatsAppButton = () => {
                 {/* WhatsApp Icon */}
                 <div className="relative z-10">
                     <FaWhatsapp
-                        size={32}
+                        size={30}
                         className="text-white transition-all duration-400 group-hover:scale-110"
                         style={{
                             filter: isHovered

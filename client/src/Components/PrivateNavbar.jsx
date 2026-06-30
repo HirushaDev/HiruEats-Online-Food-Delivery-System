@@ -54,8 +54,9 @@ const PrivateNavbar = () => {
 
   const navLinks = [
     { name: "Home", path: "/user-home", icon: FaHome },
-    { name: "Explore", path: "/explore", icon: FaCompass },
-    { name: "Services", path: "/services", icon: FaConciergeBell },
+    { name: "Foods Items", path: "/food-items", icon: FaCompass },
+     { name: "Juice Items", path: "/juice-items", icon: FaCompass },
+     { name: "Service", path: "/service", icon: FaConciergeBell },
     { name: "Contact", path: "/contact", icon: FaPhone },
   ];
 

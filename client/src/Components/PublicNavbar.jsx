@@ -29,10 +29,10 @@ const PublicNavbar = () => {
  
 
   const navLinks = [
-    { name: "Home", icon: FaHome },
-    { name: "About", icon: FaInfoCircle },
-    { name: "Services", icon: FaConciergeBell },
-    { name: "Contact", icon: FaPhone },
+    { name: "Home", path: "/", icon: FaHome },
+    { name: "About", path: "/about", icon: FaInfoCircle },
+    { name: "Services", path: "/service", icon: FaConciergeBell },
+    { name: "Contact", path: "/contact", icon: FaPhone },
   ];
 
 
@@ -91,7 +91,7 @@ const PublicNavbar = () => {
                 return (
                   <a
                     key={index}
-                    href="#"
+                    href={link.path}
                     className="flex items-center gap-2 text-gray-300 hover:text-orange-400 transition"
                   >
                     <Icon />
@@ -178,7 +178,7 @@ const PublicNavbar = () => {
                 return (
                   <a
                     key={index}
-                    href="#"
+                    href={link.path}
                     className="flex items-center gap-3 text-gray-300 hover:text-orange-400"
                   >
                     <Icon />
