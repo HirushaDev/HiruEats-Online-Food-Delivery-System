@@ -50,41 +50,42 @@ const ScrollToTop = () => {
                     fixed bottom-8 right-8 z-50
                     flex items-center justify-center
                     w-16 h-16 rounded-full
-                    bg-white/10 backdrop-blur-xl
-                    border border-white/20
-                    shadow-2xl shadow-black/20
+                    bg-neutral-900/80 backdrop-blur-xl
+                    border border-orange-500/25
+                    shadow-2xl shadow-red-500/10
                     transition-all duration-500 ease-out
-                    hover:scale-110 hover:bg-white/20
-                    focus:outline-none focus:ring-4 focus:ring-black/50
-                    ${isVisible
-                        ? "opacity-100 translate-y-0 pointer-events-auto"
-                        : "opacity-0 translate-y-8 pointer-events-none"
+                    hover:scale-110 hover:border-orange-500/50 hover:shadow-red-500/30
+                    focus:outline-none focus:ring-4 focus:ring-red-500/40
+                    ${
+                        isVisible
+                            ? "opacity-100 translate-y-0 pointer-events-auto"
+                            : "opacity-0 translate-y-8 pointer-events-none"
                     }
                 `}
                 style={{
                     boxShadow: isHovered
-                        ? "0 20px 60px rgba(255, 107, 53, 0.4), 0 0 40px rgba(255, 107, 53, 0.1)"
-                        : "0 8px 32px rgba(0, 0, 0, 0.2)",
+                        ? "0 20px 60px rgba(239, 68, 68, 0.4), 0 0 80px rgba(249, 115, 22, 0.15)"
+                        : "0 8px 32px rgba(0, 0, 0, 0.4)",
                 }}
                 aria-label="Scroll to top"
             >
-                {/* Animated ring background */}
+                {/* Animated ring background - Food Delivery Red-Orange glow */}
                 <div className="absolute inset-0 rounded-full overflow-hidden">
                     <div
                         className={`
                             absolute inset-0 rounded-full
-                            bg-gradient-to-br from-orange-500 to-amber-500
+                            bg-gradient-to-br from-red-500 to-orange-500
                             transition-opacity duration-700
-                            ${isHovered ? "opacity-100" : "opacity-30"}
+                            ${isHovered ? "opacity-100" : "opacity-40"}
                         `}
                         style={{
-                            filter: "blur(2px)",
-                            transform: "scale(1.1)",
+                            filter: "blur(3px)",
+                            transform: "scale(1.15)",
                         }}
                     />
                 </div>
 
-                {/* Progress ring (SVG) */}
+                {/* Progress ring (SVG) - Matched to food brand colors */}
                 <svg
                     className="absolute inset-0 w-full h-full -rotate-90"
                     viewBox="0 0 64 64"
@@ -94,7 +95,7 @@ const ScrollToTop = () => {
                         cy="32"
                         r={radius}
                         fill="none"
-                        stroke="rgba(255,255,255,0.08)"
+                        stroke="rgba(255,255,255,0.06)"
                         strokeWidth="2.5"
                     />
                     <circle
@@ -103,7 +104,7 @@ const ScrollToTop = () => {
                         r={radius}
                         fill="none"
                         stroke="url(#progressGradient)"
-                        strokeWidth="2.5"
+                        strokeWidth="3"
                         strokeLinecap="round"
                         strokeDasharray={circumference}
                         strokeDashoffset={strokeDashoffset}
@@ -117,28 +118,28 @@ const ScrollToTop = () => {
                             x2="100%"
                             y2="100%"
                         >
-                            <stop offset="0%" stopColor="#f97316" />
-                            <stop offset="100%" stopColor="#f59e0b" />
+                            <stop offset="0%" stopColor="#ef4444" /> {/* Red */}
+                            <stop offset="100%" stopColor="#f97316" /> {/* Orange */}
                         </linearGradient>
                     </defs>
                 </svg>
 
-                {/* Inner glow */}
+                {/* Inner glow - deep dark base for contrast */}
                 <div
                     className={`
                         absolute inset-1 rounded-full
-                        bg-black/40 backdrop-blur-sm
+                        bg-black/60 backdrop-blur-sm
                         transition-all duration-500
-                        ${isHovered ? "bg-black/30" : ""}
+                        ${isHovered ? "bg-black/40" : ""}
                     `}
                 />
 
-                {/* Arrow icon with animation */}
+                {/* Arrow icon with lifted animation */}
                 <div
                     className={`
                         relative z-10
                         transition-all duration-400 ease-out
-                        ${isHovered ? "-translate-y-1.5" : "translate-y-0"}
+                        ${isHovered ? "-translate-y-1.5 scale-105" : "translate-y-0 scale-100"}
                     `}
                 >
                     <IoIosArrowUp
@@ -150,36 +151,36 @@ const ScrollToTop = () => {
                         `}
                         style={{
                             filter: isHovered
-                                ? "drop-shadow(0 0 12px rgba(255, 107, 53, 0.6))"
-                                : "none",
+                                ? "drop-shadow(0 0 16px rgba(239, 68, 68, 0.7)) drop-shadow(0 0 30px rgba(249, 115, 22, 0.3))"
+                                : "drop-shadow(0 2px 4px rgba(0,0,0,0.3))",
                         }}
                     />
                 </div>
 
-                {/* Floating animation dots */}
+                {/* Sparkle dots - warm food accents */}
                 <div
                     className={`
-                        absolute -top-1 -right-1 w-2 h-2 rounded-full
-                        bg-orange-400
+                        absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full
+                        bg-red-400
                         transition-all duration-500
                         ${isHovered ? "opacity-100 scale-100" : "opacity-0 scale-50"}
                     `}
                 />
                 <div
                     className={`
-                        absolute -bottom-1 -left-1 w-1.5 h-1.5 rounded-full
-                        bg-amber-400
+                        absolute -bottom-1 -left-1 w-2 h-2 rounded-full
+                        bg-orange-400
                         transition-all duration-500 delay-100
                         ${isHovered ? "opacity-100 scale-100" : "opacity-0 scale-50"}
                     `}
                 />
 
-                {/* Pulsing ring on hover */}
+                {/* Pulsing delivery ring on hover */}
                 {isHovered && (
                     <div
                         className="absolute inset-0 rounded-full animate-ping-slow"
                         style={{
-                            border: "2px solid rgba(251, 146, 60, 0.3)",
+                            border: "2px solid rgba(239, 68, 68, 0.4)",
                             animation: "ping-slow 1.5s ease-out infinite",
                         }}
                     />
@@ -194,7 +195,7 @@ const ScrollToTop = () => {
                         opacity: 1;
                     }
                     100% {
-                        transform: scale(1.4);
+                        transform: scale(1.45);
                         opacity: 0;
                     }
                 }

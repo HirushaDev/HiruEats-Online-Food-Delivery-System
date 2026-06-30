@@ -7,6 +7,7 @@ import { AppContext } from "./Context/AppContext";
 import PrivateNavbar from "./Components/PrivateNavbar";
 import PublicNavbar from "./Components/PublicNavbar";
 import Footer from "./Components/Footer";
+import ScrollToTop from "./Components/ScrollToTop";
 
 import Home from "./Components/Home";
 import Login from "../src/Pages/Login/Login";
@@ -20,6 +21,7 @@ import FoodDetails from "../src/Pages/Food/FoodDetails";
 import JuiceDetails from "./Pages/Juice/JuiceDetails";
 import Cart from "../src/Pages/Cart/Cart";
 import Payment from "../src/Pages/Payment/Payment";
+import WhatsAppButton from "./Components/WhatsAppButton";
 
 const App = () => {
   const location = useLocation();
@@ -34,7 +36,7 @@ const App = () => {
 
   return (
     <>
-      <ToastContainer position="top-right" autoClose={2500} />
+      <ToastContainer position="top-right" autoClose={3000} style={{ zIndex: 100000, top: "70px" }}/>
 
       {/* NAVBAR SWITCH */}
       {!hideLayout && (
@@ -57,6 +59,8 @@ const App = () => {
       </Routes>
 
       {!hideLayout && <Footer />}
+      <ScrollToTop />
+      <WhatsAppButton/>
     </>
   );
 };
