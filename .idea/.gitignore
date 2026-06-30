@@ -1,0 +1,19 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# dependencies
+node_modules/
+
+# env
+.env
+
+# build
+dist/
+build/
+target/
+application.properties
