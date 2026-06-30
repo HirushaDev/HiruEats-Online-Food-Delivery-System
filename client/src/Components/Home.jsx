@@ -5,9 +5,11 @@ import HowItWorks from '../Pages/User-Home/HowItWorks';
 import ShowcaseSection from '../Pages/Home/ShowcaseSection';
 import Footer from '../Components/Footer';
 import SriLankaMap from '../Pages/Home/SriLankaMap';
+import ScrollToTop from '../Components/ScrollToTop';
 
 
 const Home = () => {
+
   return (
     <div>
      
@@ -16,7 +18,8 @@ const Home = () => {
       <HowItWorks />
       <SriLankaMap />
       <AppDownload/>
-     
+      <ScrollToTop />
+    
         
     </div>
   );
