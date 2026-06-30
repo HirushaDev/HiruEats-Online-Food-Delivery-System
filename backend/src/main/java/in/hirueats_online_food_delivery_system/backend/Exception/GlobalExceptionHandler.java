@@ -13,7 +13,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    //  Handle Validation Errors (@Valid)
+    // Handle Validation Errors (@Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(
             MethodArgumentNotValidException ex) {
@@ -29,10 +29,10 @@ public class GlobalExceptionHandler {
         response.put("message", "Validation failed");
         response.put("errors", errors);
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(response);
     }
 
-    //  Handle ResponseStatusException (your custom throws)
+    // Handle ResponseStatusException
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<Map<String, Object>> handleResponseStatusException(
             ResponseStatusException ex) {
@@ -45,7 +45,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, ex.getStatusCode());
     }
 
-    //  Handle Generic Runtime Errors (unexpected errors)
+    // Handle Resource Not Found
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    // Handle Generic Errors
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
 
@@ -54,6 +60,6 @@ public class GlobalExceptionHandler {
         response.put("message", "Internal Server Error");
         response.put("error", ex.getMessage());
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }
