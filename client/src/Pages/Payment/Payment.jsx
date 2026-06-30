@@ -8,7 +8,9 @@ import {
   FaUniversity,
   FaMobileAlt,
   FaMoneyBillWave,
+  FaArrowLeft,
 } from "react-icons/fa";
+
 
 const Payment = () => {
   const navigate = useNavigate();
@@ -619,6 +621,15 @@ const Payment = () => {
   // ── MAIN RENDER ──
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-10">
+      <div className="max-w-6xl mx-auto mb-6">
+  <button
+    onClick={() => navigate(-1)}
+    className="flex items-center gap-2 text-black hover:text-orange-600 font-semibold cursor-pointer"
+  >
+    <FaArrowLeft />
+    Back to Cart
+  </button>
+</div>
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
 
         {/* LEFT SIDE - PAYMENT METHODS */}
