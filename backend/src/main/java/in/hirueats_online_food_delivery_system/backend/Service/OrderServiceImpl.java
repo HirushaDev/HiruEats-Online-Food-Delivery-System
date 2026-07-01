@@ -97,6 +97,16 @@ public class OrderServiceImpl implements OrderService {
         return mapToResponse(orderRepository.save(order));
     }
 
+    @Override
+    public OrderResponse shipOrder(Long orderId) {
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order Not Found"));
+
+        order.setStatus("SHIPPED");
+
+        return mapToResponse(orderRepository.save(order));
+    }
+
     private OrderResponse mapToResponse(OrderEntity order) {
 
         List<OrderItemRequest> items = new ArrayList<>();

@@ -8,6 +8,7 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processingOrderId, setProcessingOrderId] = useState(null);
+  const [statusSelections, setStatusSelections] = useState({});
 
   useEffect(() => {
     fetchOrders();
@@ -31,6 +32,13 @@ const Orders = () => {
       });
 
       setOrders(Array.isArray(response.data) ? response.data : []);
+      const initialSelections = Array.isArray(response.data)
+        ? response.data.reduce((acc, order) => {
+            acc[order.id] = order.status || "PENDING";
+            return acc;
+          }, {})
+        : {};
+      setStatusSelections(initialSelections);
     } catch (error) {
       console.error("Error fetching orders:", error);
       const message =
@@ -62,13 +70,27 @@ const Orders = () => {
         }
       );
 
+      const updatedStatus = (response.data?.status || "").toUpperCase();
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
           order.id === id ? { ...order, status: response.data?.status || order.status } : order
         )
       );
 
-      toast.success(`Order #${id} ${action}d successfully`);
+      setStatusSelections((prev) => ({
+        ...prev,
+        [id]: updatedStatus || prev[id],
+      }));
+
+      if (updatedStatus === "SHIPPED") {
+        toast.success(`Order #${id} shipped successfully`);
+      } else if (updatedStatus === "APPROVED") {
+        toast.success(`Order #${id} approved successfully`);
+      } else if (updatedStatus === "REJECTED") {
+        toast.success(`Order #${id} rejected successfully`);
+      } else {
+        toast.success(`Order #${id} updated successfully`);
+      }
     } catch (error) {
       console.error(`Error trying to ${action} order:`, error);
       const message =
@@ -81,6 +103,8 @@ const Orders = () => {
 
   const getStatusClass = (status) => {
     switch ((status || "").toUpperCase()) {
+      case "SHIPPED":
+        return "bg-blue-100 text-blue-700";
       case "APPROVED":
         return "bg-[#2F9E6E]/10 text-[#2F9E6E]";
       case "REJECTED":
@@ -94,6 +118,39 @@ const Orders = () => {
   const getDeliverySummary = (order) => {
     const lines = [order.deliveryAddress, order.deliveryCity, order.deliveryPhoneNumber].filter(Boolean);
     return lines.length ? lines.join(" | ") : "-";
+  };
+
+  const handleStatusSelection = (orderId, value) => {
+    setStatusSelections((prev) => ({
+      ...prev,
+      [orderId]: value,
+    }));
+  };
+
+  const applySelectedStatus = (order) => {
+    const selected = (statusSelections[order.id] || order.status || "PENDING").toUpperCase();
+
+    if (selected === (order.status || "").toUpperCase()) {
+      toast.info(`Order #${order.id} is already ${selected.toLowerCase()}`);
+      return;
+    }
+
+    if (selected === "APPROVED") {
+      updateOrderStatus(order.id, "approve");
+      return;
+    }
+
+    if (selected === "REJECTED") {
+      updateOrderStatus(order.id, "reject");
+      return;
+    }
+
+    if (selected === "SHIPPED") {
+      updateOrderStatus(order.id, "ship");
+      return;
+    }
+
+    toast.info("Pending is the current default status.");
   };
 
   return (
@@ -178,7 +235,8 @@ const Orders = () => {
                         </span>
                       </td>
                       <td className="p-3">
-                        <div className="flex justify-center gap-2">
+                        <div className="space-y-3">
+                          <div className="flex justify-center gap-2">
                           <button
                             type="button"
                             disabled={!isPending || isProcessing}
@@ -195,6 +253,27 @@ const Orders = () => {
                           >
                             {isProcessing ? "..." : "Reject"}
                           </button>
+                        </div>
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={statusSelections[order.id] || order.status || "PENDING"}
+                              onChange={(e) => handleStatusSelection(order.id, e.target.value)}
+                              className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-[#1C2321] outline-none transition focus:border-[#FF6B35]"
+                            >
+                              <option value="PENDING">Pending</option>
+                              <option value="APPROVED">Approved</option>
+                              <option value="SHIPPED">Shipped</option>
+                              <option value="REJECTED">Rejected</option>
+                            </select>
+                            <button
+                              type="button"
+                              disabled={isProcessing}
+                              onClick={() => applySelectedStatus(order)}
+                              className="rounded-lg bg-[#1B2420] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#111814] disabled:cursor-not-allowed disabled:bg-gray-300"
+                            >
+                              Apply
+                            </button>
+                          </div>
                         </div>
                       </td>
                     </tr>

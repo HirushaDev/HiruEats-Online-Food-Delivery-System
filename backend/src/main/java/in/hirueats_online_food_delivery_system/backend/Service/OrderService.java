@@ -16,4 +16,6 @@ public interface OrderService {
     OrderResponse approveOrder(Long orderId);
 
     OrderResponse rejectOrder(Long orderId);
+
+    OrderResponse shipOrder(Long orderId);
 }

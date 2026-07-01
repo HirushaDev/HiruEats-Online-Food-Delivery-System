@@ -18,6 +18,7 @@ import {
   FaSignOutAlt,
   FaCog,
   FaEnvelope,
+  FaShoppingBasket,
 } from "react-icons/fa";
 import { FaCheckCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -58,6 +59,7 @@ const PrivateNavbar = () => {
      { name: "Juice Items", path: "/juice-items", icon: FaCompass },
      { name: "Service", path: "/service", icon: FaConciergeBell },
     { name: "Contact", path: "/contact", icon: FaPhone },
+     { name: "My Orders", path: "/my-orders", icon: FaShoppingBasket },
   ];
 
   const handleLogout = async () => {

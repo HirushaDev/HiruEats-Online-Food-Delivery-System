@@ -44,4 +44,10 @@ public class OrderController {
     public OrderResponse rejectOrder(@PathVariable Long id){
         return orderService.rejectOrder(id);
     }
+
+    // Admin Ship Order
+    @PutMapping("/{id}/ship")
+    public OrderResponse shipOrder(@PathVariable Long id){
+        return orderService.shipOrder(id);
+    }
 }
