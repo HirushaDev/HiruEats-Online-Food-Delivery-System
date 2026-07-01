@@ -23,6 +23,7 @@ import JuiceItems from "../src/Pages/Juice/JuiceItems";
 import JuiceDetails from "./Pages/Juice/JuiceDetails";
 import Cart from "../src/Pages/Cart/Cart";
 import Payment from "../src/Pages/Payment/Payment";
+import MyOrders from "../src/Pages/Orders/MyOrders";
 import WhatsAppButton from "./Components/WhatsAppButton";
 import About from "./Pages/About/About";  
 
@@ -61,6 +62,7 @@ const App = () => {
         <Route path="/juice-items" element={<JuiceItems />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/my-orders" element={<MyOrders />} />
         <Route path="/about" element={<About />} />
       </Routes>
 

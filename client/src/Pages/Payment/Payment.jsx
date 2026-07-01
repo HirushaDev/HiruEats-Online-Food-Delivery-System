@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { AppConstants } from "../../Util/constants";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   FaCreditCard,
   FaUniversity,
@@ -19,6 +20,7 @@ const Payment = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState(null);
   const [authChecked, setAuthChecked] = useState(false);
+  const [showSuccessCard, setShowSuccessCard] = useState(false);
 
   const cartItems = state?.cartItems || [];
   const subtotal = state?.subtotal || 0;
@@ -282,7 +284,7 @@ const Payment = () => {
     console.log(" Sending order data:", JSON.stringify(orderData, null, 2));
 
     const response = await axios.post(
-      `${AppConstants.BACKEND_API_BASE_URL}hirueats/orders`,
+      `${AppConstants.BACKEND_API_BASE_URL}/hirueats/orders`,
       orderData,
       {
         headers: {
@@ -296,17 +298,21 @@ const Payment = () => {
 
     if (response.data) {
       toast.success("Payment successful! Order placed.");
+      setShowSuccessCard(true);
       
       // Clear cart
       localStorage.removeItem("cart");
       localStorage.removeItem("cartItems");
       
-      navigate("/order-confirmation", {
-        state: {
-          orderId: response.data.id,
-          orderDetails: response.data
-        }
-      });
+      setTimeout(() => {
+        navigate("/my-orders", {
+          state: {
+            orderId: response.data.id,
+            orderDetails: response.data,
+            justPlacedOrder: true,
+          },
+        });
+      }, 1800);
     }
 
   } catch (error) {
@@ -620,7 +626,40 @@ const Payment = () => {
 
   // ── MAIN RENDER ──
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-10">
+    <div className="relative min-h-screen bg-gray-50 px-6 py-10">
+      <AnimatePresence>
+        {showSuccessCard && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="w-full max-w-md rounded-3xl border border-emerald-200 bg-white p-8 text-center shadow-2xl"
+              initial={{ scale: 0.85, y: 30, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.9, y: 20, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 180, damping: 16 }}
+            >
+              <motion.div
+                className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-3xl text-emerald-600 shadow-inner"
+                animate={{ scale: [1, 1.08, 1] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                ✓
+              </motion.div>
+              <h2 className="mt-6 text-2xl font-bold text-gray-900">
+                Payment Successfully
+              </h2>
+              <p className="mt-3 text-sm text-gray-600">
+                Your order has been saved to the database. Redirecting you to My Orders...
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="max-w-6xl mx-auto mb-6">
   <button
     onClick={() => navigate(-1)}
