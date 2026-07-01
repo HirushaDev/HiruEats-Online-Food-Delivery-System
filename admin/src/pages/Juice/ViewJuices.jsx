@@ -2,54 +2,54 @@ import React, { useState, useEffect } from "react";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { AppConstants } from "../Util/constants";
+import { AppConstants } from "../../Util/constants";
 
-const ViewFoods = () => {
-  const [foods, setFoods] = useState([]);
+const ViewJuices = () => {
+  const [juice, setJuice] = useState([]);
   const [loading, setLoading] = useState(true);
   const BACKEND_URL = AppConstants.BACKEND_API_BASE_URL;
 
   useEffect(() => {
-    fetchFoods();
+    fetchJuices();
   }, []);
 
-  const fetchFoods = async () => {
+  const fetchJuices = async () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await axios.get(
-        `${BACKEND_URL}/hirueats/foods`,
+        `${BACKEND_URL}/hirueats/juices`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setFoods(response.data);
+      setJuice(response.data);
     } catch (error) {
-      console.error("Error fetching foods:", error);
-      toast.error("Failed to load food items");
+      console.error("Error fetching juices:", error);
+      toast.error("Failed to load juices items");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDelete = async (id, foodName) => {
-    if (!window.confirm(`Are you sure you want to delete "${foodName}"?`)) return;
+  const handleDelete = async (id, juiceName) => {
+    if (!window.confirm(`Are you sure you want to delete "${juiceName}"?`)) return;
     try {
       const token = localStorage.getItem("adminToken");
       await axios.delete(
-        `${BACKEND_URL}/hirueats/foods/${id}`,
+        `${BACKEND_URL}/hirueats/juices/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setFoods((prev) => prev.filter((f) => f.id !== id));
-      toast.success(`"${foodName}" deleted successfully`);
+      setJuice((prev) => prev.filter((f) => f.id !== id));
+      toast.success(`"${juiceName}" deleted successfully`);
     } catch (error) {
-      console.error("Error deleting food:", error);
-      toast.error("Failed to delete food item");
+      console.error("Error deleting juice item:", error);
+      toast.error("Failed to delete juice item");
     }
   };
 
@@ -57,21 +57,21 @@ const ViewFoods = () => {
     <div className="mx-auto max-w-6xl">
       <div className="mb-6">
         <h1 className="font-sora text-2xl font-semibold text-[#1C2321]">
-          Food Items
+          Juice Items
         </h1>
         <p className="mt-1 font-inter text-sm text-[#6B7280]">
-          Manage all listed food items on the menu.
+          Manage all listed juice items on the menu.
         </p>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <p className="font-inter text-sm text-[#6B7280]">Loading food items...</p>
+            <p className="font-inter text-sm text-[#6B7280]">Loading juice items...</p>
           </div>
-        ) : foods.length === 0 ? (
+        ) : juice.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <p className="font-inter text-sm text-[#6B7280]">No food items found.</p>
+            <p className="font-inter text-sm text-[#6B7280]">No juice items found.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -79,7 +79,7 @@ const ViewFoods = () => {
               <thead>
                 <tr className="bg-[#FF6B35] font-inter text-sm text-white">
                   <th className="p-3 text-left">Image</th>
-                  <th className="p-3 text-left">Food Name</th>
+                  <th className="p-3 text-left">Juice Name</th>
                   <th className="p-3 text-left">Category</th>
                   <th className="p-3 text-left">Price</th>
                   <th className="p-3 text-left">Discount</th>
@@ -88,16 +88,16 @@ const ViewFoods = () => {
                 </tr>
               </thead>
               <tbody>
-                {foods.map((food) => (
+                {juice.map((juice) => (
                   <tr
-                    key={food.id}
+                    key={juice.id}
                     className="border-b border-black/5 font-inter text-sm text-[#1C2321] transition-colors hover:bg-[#FAF7F2]"
                   >
                     <td className="p-3">
-                      {food.imageUrl ? (
+                      {juice.imageUrl ? (
                         <img
-                          src={`${BACKEND_URL}${food.imageUrl}`}
-                          alt={food.foodName}
+                          src={`${BACKEND_URL}${juice.imageUrl}`}
+                          alt={juice.juiceName}
                           className="h-14 w-14 rounded-lg object-cover"
                         />
                       ) : (
@@ -106,21 +106,21 @@ const ViewFoods = () => {
                         </div>
                       )}
                     </td>
-                    <td className="p-3 font-medium">{food.foodName}</td>
-                    <td className="p-3 text-[#6B7280]">{food.category}</td>
-                    <td className="p-3 font-mono">Rs. {food.price?.toFixed(2)}</td>
+                    <td className="p-3 font-medium">{juice.juiceName}</td>
+                    <td className="p-3 text-[#6B7280]">{juice.category}</td>
+                    <td className="p-3 font-mono">Rs. {juice.price?.toFixed(2)}</td>
                     <td className="p-3 font-mono">
-                      {food.discount ? `${food.discount}%` : "—"}
+                      {juice.discount ? `${juice.discount}%` : "—"}
                     </td>
                     <td className="p-3">
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-medium ${
-                          food.available
+                          juice.available
                             ? "bg-[#2F9E6E]/10 text-[#2F9E6E]"
                             : "bg-[#E64A4A]/10 text-[#E64A4A]"
                         }`}
                       >
-                        {food.available ? "Available" : "Unavailable"}
+                        {juice.available ? "Available" : "Unavailable"}
                       </span>
                     </td>
                     <td className="p-3">
@@ -132,7 +132,7 @@ const ViewFoods = () => {
                           <FiEdit size={16} />
                         </button>
                         <button
-                          onClick={() => handleDelete(food.id, food.foodName)}
+                          onClick={() => handleDelete(juice.id, juice.juiceName)}
                           className="rounded-lg p-1.5 text-red-600 transition-colors hover:bg-red-50"
                           title="Delete"
                         >
@@ -151,4 +151,4 @@ const ViewFoods = () => {
   );
 };
 
-export default ViewFoods;
+export default ViewJuices;

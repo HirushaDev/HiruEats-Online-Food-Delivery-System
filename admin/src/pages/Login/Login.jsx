@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { FaLock, FaQuestionCircle, FaSignInAlt, FaEnvelope } from "react-icons/fa";
-import { assets } from "../assets/assets";
+import { assets } from "../../assets/assets";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { AppConstants } from "../Util/constants";
+import { AppConstants } from "../../Util/constants";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");

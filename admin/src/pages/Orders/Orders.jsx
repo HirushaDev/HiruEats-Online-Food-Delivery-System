@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { AppConstants } from "../Util/constants";
+import { AppConstants } from "../../Util/constants";
 
 const Orders = () => {
   const BACKEND_URL = AppConstants.BACKEND_API_BASE_URL;

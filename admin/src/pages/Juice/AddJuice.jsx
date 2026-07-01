@@ -9,7 +9,7 @@ import {
 } from "react-icons/fi";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { AppConstants } from "../Util/constants";
+import { AppConstants } from "../../Util/constants";
 
 const initialState = {
   name: "",
