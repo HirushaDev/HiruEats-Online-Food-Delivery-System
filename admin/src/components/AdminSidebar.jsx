@@ -13,6 +13,12 @@ const navItems = [
 ];
 
 export default function AdminSidebar({ open, onClose }) {
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminEmail");
+    window.location.href = "/";
+  };
+
   return (
     <>
       {/* Mobile overlay */}
@@ -64,7 +70,7 @@ export default function AdminSidebar({ open, onClose }) {
                 {({ isActive }) => (
                   <>
                     <span
-                      className={`absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-[#FF6B35] transition-opacity
+                      className={`absolute left-0 top-1/2 h-5 w-0.75 -translate-y-1/2 rounded-r-full bg-[#FF6B35] transition-opacity
                       ${isActive ? "opacity-100" : "opacity-0"}`}
                     />
                     <Icon size={18} />
@@ -83,7 +89,10 @@ export default function AdminSidebar({ open, onClose }) {
               <FiSettings size={18} />
               Settings
             </button>
-            <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 font-inter text-sm font-medium text-white/60 transition-colors hover:bg-white/5 hover:text-white">
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 font-inter text-sm font-medium text-white/60 transition-colors hover:bg-white/5 hover:text-white"
+            >
               <FiLogOut size={18} />
               Log out
             </button>
