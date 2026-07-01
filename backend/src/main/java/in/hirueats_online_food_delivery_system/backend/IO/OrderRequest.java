@@ -25,4 +25,12 @@ public class OrderRequest {
 
     private List<OrderItemRequest> items;
 
+    private String deliveryAddress;
+
+    private String deliveryCity;
+
+    private String deliveryPhoneNumber;
+
+    private String deliveryNote;
+
 }

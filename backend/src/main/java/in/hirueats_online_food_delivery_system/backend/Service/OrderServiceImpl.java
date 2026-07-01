@@ -31,6 +31,10 @@ public class OrderServiceImpl implements OrderService {
         order.setDeliveryFee(request.getDeliveryFee());
         order.setTotal(request.getTotal());
         order.setStatus("PENDING");
+        order.setDeliveryAddress(request.getDeliveryAddress());
+        order.setDeliveryCity(request.getDeliveryCity());
+        order.setDeliveryPhoneNumber(request.getDeliveryPhoneNumber());
+        order.setDeliveryNote(request.getDeliveryNote());
 
         List<OrderItemEntity> orderItems = new ArrayList<>();
 
@@ -123,6 +127,10 @@ public class OrderServiceImpl implements OrderService {
                 .status(order.getStatus())
                 .createdAt(order.getCreatedAt())
                 .items(items)
+                .deliveryAddress(order.getDeliveryAddress())
+                .deliveryCity(order.getDeliveryCity())
+                .deliveryPhoneNumber(order.getDeliveryPhoneNumber())
+                .deliveryNote(order.getDeliveryNote())
                 .build();
     }
 

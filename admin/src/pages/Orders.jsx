@@ -91,6 +91,11 @@ const Orders = () => {
     }
   };
 
+  const getDeliverySummary = (order) => {
+    const lines = [order.deliveryAddress, order.deliveryCity, order.deliveryPhoneNumber].filter(Boolean);
+    return lines.length ? lines.join(" | ") : "-";
+  };
+
   return (
     <div className="mx-auto max-w-7xl">
       <div className="mb-6">
@@ -118,6 +123,7 @@ const Orders = () => {
                   <th className="p-3 text-left">User</th>
                   <th className="p-3 text-left">Created</th>
                   <th className="p-3 text-left">Payment</th>
+                  <th className="p-3 text-left">Delivery</th>
                   <th className="p-3 text-left">Items</th>
                   <th className="p-3 text-left">Total</th>
                   <th className="p-3 text-left">Status</th>
@@ -142,6 +148,14 @@ const Orders = () => {
                           : "-"}
                       </td>
                       <td className="p-3 text-[#6B7280]">{order.paymentMethod || "-"}</td>
+                      <td className="p-3 text-[#6B7280]">
+                        <div className="max-w-sm space-y-1">
+                          <p className="truncate">{getDeliverySummary(order)}</p>
+                          {order.deliveryNote ? (
+                            <p className="line-clamp-2 text-xs text-[#9CA3AF]">Note: {order.deliveryNote}</p>
+                          ) : null}
+                        </div>
+                      </td>
                       <td className="p-3">
                         <div className="max-w-xs space-y-1">
                           {(order.items || []).length > 0 ? (

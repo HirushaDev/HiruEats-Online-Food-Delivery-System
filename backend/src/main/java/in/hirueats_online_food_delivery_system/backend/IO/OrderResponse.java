@@ -32,4 +32,12 @@ public class OrderResponse {
     private LocalDateTime createdAt;
 
     private List<OrderItemRequest> items;
+
+    private String deliveryAddress;
+
+    private String deliveryCity;
+
+    private String deliveryPhoneNumber;
+
+    private String deliveryNote;
 }

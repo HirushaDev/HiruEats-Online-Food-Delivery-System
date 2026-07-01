@@ -32,6 +32,16 @@ public class OrderEntity {
 
     private String status;
 
+    @Column(length = 500)
+    private String deliveryAddress;
+
+    private String deliveryCity;
+
+    private String deliveryPhoneNumber;
+
+    @Column(length = 1000)
+    private String deliveryNote;
+
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
